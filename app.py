@@ -5,6 +5,8 @@ from tempfile import mkdtemp
 import os
 from threading import Event
 import datetime
+import csv
+import codecs
 
 from sqlalchemy import create_engine, or_, and_, sql
 from sqlalchemy.orm import query, relation, relationship, scoped_session, sessionmaker
@@ -79,6 +81,20 @@ def event(id):
         flash("")
         return redirect("/")
 
+@app.route("/event/new", methods=["GET", "POST"])
+@coach_required
+@login_required
+def create():
+    """Create an event"""
+    if request.method == "GET":
+        return render_template("create.html", user=session, error=check_error())
+    else:
+        event = Class(title=request.form.get("title"), start=request.form.get("start"), end=request.form.get("end"), capacity=request.form.get("capacity"), location=request.form.get("location"), trainer=request.form.get("trainer"))
+        db.session.add(event)
+        db.session.commit()
+        flash("Заняття створено")
+        return redirect(f"/event/{event.id}")
+
 @app.route("/profile")
 @login_required
 def profile_own():
@@ -121,19 +137,46 @@ def lookup():
     """Lookup a user form"""
     return render_template("lookup.html", error=check_error(), user=session)
 
-@app.route("/create", methods=["GET", "POST"])
+@app.route("/pass/new", methods=["GET", "POST"])
 @admin_required
 @login_required
-def create():
-    """Create an event"""
+def new_pass():
     if request.method == "GET":
-        return render_template("create.html", user=session, error=check_error())
+        return render_template("new_pass.html", error=check_error(), user=session)
     else:
-        event = Class(title=request.form.get("title"), start=request.form.get("start"), end=request.form.get("end"), capacity=request.form.get("capacity"), location=request.form.get("location"), trainer=request.form.get("trainer"))
-        db.session.add(event)
+        new_pass = Pass(id=request.form.get("pass_id"), first=request.form.get("first"), last=request.form.get("last"), single_use=request.form.get("single_use"))
+        db.session.add(new_pass)
         db.session.commit()
-        flash("Заняття створено")
-        return redirect(f"/event/{event.id}")
+        flash("Абонемент додано")
+        return redirect("/")
+
+@app.route("/pass/activate/mass")
+@admin_required
+@login_required
+def mass_activate():
+    if request.method == "GET":
+        return render_template("mass_activate.html", error=check_error(), user=session)
+    else:
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(url_for("mass_activate", err="t"))
+        list = request.files["list"]
+        if list and allowed_file(list.filename):
+            paid = []
+            stream = codecs.iterdecode(list.stream, 'utf-8')
+            for row in csv.reader(stream, dialect=csv.excel):
+                if row:
+                    paid.append(row)
+        users = db.session.query(User).all()
+        if paid:
+            for user in users:
+                if user.pass_id in paid:
+                    user.subscribed = True
+                else:
+                    user.subscribed = False
+                db.session.commit()
+        flash("Абонементи оновлено")
+        return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
