@@ -81,7 +81,7 @@ def event(id):
 @app.route("/profile")
 @login_required
 def profile_own():
-    return render_template("profile.html", profile=session, own=True, user=session)
+    return render_template("profile.html", profile=session, own=True, user=session, error=check_error())
 
 @app.route("/profile/<int:id>")
 @admin_required
@@ -150,14 +150,10 @@ def login():
             pass
         user = User.query.filter_by(google_id=guserid).first()
         if not user:
-            user = User(first=idinfo["given_name"], last=idinfo["family_name"], email=idinfo["email"], google_id=guserid, picture=idinfo["picture"])
-            db.session.add(user)
-            db.session.commit()
-            user = User.query.filter_by(google_id=guserid).first()
+            session["google_creds"] = idinfo
+            return redirect("/register")
         else:
             # Update existing info
-            #user.first = idinfo["given_name"] # Probably will leave name editing up to staff
-            #user.last=idinfo["family_name"]
             user.picture=idinfo["picture"]
             db.session.commit()
         session["id"] = user.id
@@ -166,8 +162,73 @@ def login():
         session["email"] = user.email
         session["role"] = user.role
         session["picture"] = user.picture
+        session["pass_id"] = user.pass_id
+        session["subscribed"] = user.subscribed
+        session["single_use"] = user.single_use
+        session["tickets"] = user.tickets
         return redirect("/")
     return render_template("login.html", error=session.get("error"), google_signin_client_id=G_CLIENT_ID, user=session)
+    
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register a user if a pass is available"""
+    if request.method == "GET":
+        return render_template("register.html", error=check_error())
+    else:
+        pass_id = request.form.get("pass_id")
+        pass_obj = Pass.query.get(pass_id)
+        if not pass_obj:
+            flash("Абонемент не знайдено")
+            return redirect(url_for("register", err="t"))
+        elif pass_obj.single_use:
+            flash("Ви ввели разовий абонемент. Будь-ласка увійдіть як разовий користувач.")
+            return redirect(url_for("single_use"))
+        else:
+            idinfo = session["google_creds"]
+            user = User(first=idinfo["given_name"], pass_id=pass_obj.id, last=idinfo["family_name"], email=idinfo["email"], google_id=idinfo["sub"], picture=idinfo["picture"])
+            db.session.add(user)
+            db.session.delete(pass_obj)
+            db.session.commit()
+            session["id"] = user.id
+            session["first"] = user.first
+            session["last"] = user.last
+            session["email"] = user.email
+            session["role"] = user.role
+            session["picture"] = user.picture
+            session["pass_id"] = user.pass_id
+            session["subscribed"] = user.subscribed
+            session["single_use"] = user.single_use
+            session["tickets"] = user.tickets
+            return redirect("/")
+        
+@app.route("/single_use", methods=["GET", "POST"])
+def single_use():
+    """Log a person in with a single use pass"""
+    if request.method == "GET":
+        return render_template("single_use.html", error=check_error())
+    else:
+        user = db.session.query(User).filter(User.pass_id == request.form.get("pass_id")).first()
+        if not user:
+            pass_obj = Pass.query.get(request.form.get("pass_id"))
+            if not pass_obj:
+                flash("Абонемент не знайдено")
+                return redirect(url_for("single_use", err="t"))
+            else:
+                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, picture="/static/nopic.jpg", single_use=True, tickets=pass_obj.tickets)
+                db.session.add(user)
+                db.session.delete(pass_obj)
+                db.session.commit()
+        session["id"] = user.id
+        session["first"] = user.first
+        session["last"] = user.last
+        session["email"] = user.email
+        session["role"] = user.role
+        session["picture"] = user.picture
+        session["pass_id"] = user.pass_id
+        session["subscribed"] = user.subscribed
+        session["single_use"] = user.single_use
+        session["tickets"] = user.tickets
+        return redirect("/")
 
 if __name__ == "__main__":
     with app.app_context():
