@@ -4,6 +4,7 @@ from re import U
 from tempfile import mkdtemp
 import os
 from threading import Event
+import datetime
 
 from sqlalchemy import create_engine, or_, and_, sql
 from sqlalchemy.orm import query, relation, relationship, scoped_session, sessionmaker
@@ -229,6 +230,34 @@ def single_use():
         session["single_use"] = user.single_use
         session["tickets"] = user.tickets
         return redirect("/")
+
+##############
+# Automation #
+##############
+
+@app.cli.command("delete_single_use")
+def delete_single_use():
+    """Delete empty single-use accounts on the first day of the month"""
+    if datetime.date.today().day == 1:
+        single_users = db.session.query(User).filter(User.single_use == True).all()
+        for user in single_users:
+            if db.session.query(Relationship).filter(Relationship.participant == user.id).first():
+                # Skip deletion if user is still registered for a class
+                continue
+            if user.tickets > 0:
+                continue
+            else:
+                db.session.delete(user)
+        db.session.commit()
+
+@app.cli.command("delete_old_class")
+def delete_old_class():
+    """Delete classes that are over 90 days old"""
+    three_months_old = datetime.date.today() - datetime.timedelta(days=90)
+    old_classes = db.session.query(Class).filter(Class.end < three_months_old).all()
+    for class in old_classes:
+        db.session.delete(class)
+    db.session.commit()
 
 if __name__ == "__main__":
     with app.app_context():
