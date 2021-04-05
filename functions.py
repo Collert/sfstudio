@@ -1,4 +1,4 @@
-from flask import redirect, session, flash
+from flask import redirect, session, flash, request
 from functools import wraps
 
 def login_required(f):
@@ -28,3 +28,10 @@ def admin_required(f):
             return redirect("/?err=t")
         return f(*args, **kwargs)
     return decorated_function
+
+def check_error():
+    """Check if an error flag was passed in URL"""
+    if request.args.get("err") == "t":
+        return True
+    else:
+        return False
