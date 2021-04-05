@@ -45,21 +45,13 @@ G_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 @login_required
 def home():
     """Display homepage"""
-    if request.args.get("err") == "t":
-        error = True
-    else:
-        error = False
     events = db.session.query(Relationship, Class).join(Class, Class.id == Relationship.classs).filter(Relationship.participant == 1).all()
-    return render_template("home.html", error=error, user=session, events=events)
+    return render_template("home.html", error=check_error(), user=session, events=events)
 
 @app.route("/events", methods=["GET", "POST"])
 @login_required
 def events():
     """Display all available events"""
-    if request.args.get("err") == "t":
-        error = True
-    else:
-        error = False
     events = db.session.query(Class).order_by(Class.participants.desc()).all()
     relations = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).all()
     participants = {}
@@ -67,20 +59,16 @@ def events():
         participants[class.id] = []
     for relation in relations:
         participants[relation[0].classs].append(relation[1])
-    return render_template("events.html", events=events, error=error, participants=participants, user=session)
+    return render_template("events.html", events=events, error=check_error(), participants=participants, user=session)
 
 @app.route("/event/<int:id>", methods=["GET", "POST"])
 @login_required
 def event(id):
     """Display summary of a class"""
-    if request.args.get("err") == "t":
-        error = True
-    else:
-        error = False
     if request.method == "GET":
         event = db.session.query(Class).get(id)
         participants = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).filter(Relationship.classs == id)
-        return render_template("event.html", event=event, error=error, participants=participants, user=session)
+        return render_template("event.html", event=event, error=check_error(), participants=participants, user=session)
     else:
         event = db.session.query(Class).get(id)
         event.participants += 1
@@ -100,29 +88,21 @@ def profile_own():
 @login_required
 def profile(id):
     """Look up person's profile"""
-    if request.args.get("err") == "t":
-        error = True
-    else:
-        error = False
     user = db.session.query(User).get(id)
     classes = db.session.query(Relationship, Class).join(Class, Class.id == Relationship.classs).filter(Relationship.participant == id).all()
-    return render_template("profile.html", error=error, profile=user, own=False, classes=classes, user=session)
+    return render_template("profile.html", error=check_error(), profile=user, own=False, classes=classes, user=session)
 
 @app.route("/profile/<int:id>/edit", methods=["GET", "POST"])
 @admin_required
 @login_required
 def edit_person(id):
     """Edit person's profile"""
-    if request.args.get("err") == "t":
-        error = True
-    else:
-        error = False
     user = db.session.query(User).get(id)
     if not user:
         flash("")
         return redirect(url_for("lookup", err="t"))
     if request.method == "GET":
-        return render_template("user-edit.html", profile=user, user=session, error=error)
+        return render_template("user-edit.html", profile=user, user=session, error=check_error())
     else:
         user.first = request.form.get("first")
         user.last = request.form.get("last")
@@ -138,23 +118,15 @@ def edit_person(id):
 @login_required
 def lookup():
     """Lookup a user form"""
-    if request.args.get("err") == "t":
-        error = True
-    else:
-        error = False
-    return render_template("lookup.html", error=error, user=session)
+    return render_template("lookup.html", error=check_error(), user=session)
 
 @app.route("/create", methods=["GET", "POST"])
 @admin_required
 @login_required
 def create():
     """Create an event"""
-    if request.args.get("err") == "t":
-        error = True
-    else:
-        error = False
     if request.method == "GET":
-        return render_template("create.html", user=session, error=error)
+        return render_template("create.html", user=session, error=check_error())
     else:
         event = Class(title=request.form.get("title"), start=request.form.get("start"), end=request.form.get("end"), capacity=request.form.get("capacity"), location=request.form.get("location"), trainer=request.form.get("trainer"))
         db.session.add(event)
