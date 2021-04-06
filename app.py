@@ -197,7 +197,7 @@ def login():
         print("=====================================================================================================================")
         if not user:
             session["google_creds"] = idinfo
-            return redirect("/register")
+            return redirect(url_for("register"))
         else:
             # Update existing info
             user.picture=idinfo["picture"]
