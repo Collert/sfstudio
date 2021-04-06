@@ -10,7 +10,15 @@ function onSignIn(googleUser){
     };
     console.log(id_token);
     xhr.send('idtoken=' + id_token);
-    //setTimeout(function(){window.location.href = "/";}, 1000);
+    redirectPost("/login");
+}
+
+function redirectPost(url) {
+    var form = document.createElement('form');
+    document.body.appendChild(form);
+    form.method = 'post';
+    form.action = url;
+    form.submit();
 }
 
 /**
