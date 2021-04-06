@@ -192,6 +192,9 @@ def login():
             # Invalid token
             pass
         user = User.query.filter_by(google_id=guserid).first()
+        print("=====================================================================================================================")
+        print(user.first)
+        print("=====================================================================================================================")
         if not user:
             session["google_creds"] = idinfo
             return redirect("/register")
