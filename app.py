@@ -183,7 +183,8 @@ def login():
     """Log user in using Google sign-in"""
     if request.method == "POST":
         try:
-            guserid = session["google_creds"]["sub"]
+            idinfo = session["google_creds"]
+            guserid = idinfo["sub"]
         except KeyError:
             token = request.form["idtoken"]
             try:
