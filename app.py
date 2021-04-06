@@ -257,7 +257,7 @@ def single_use():
                 flash("Абонемент не знайдено")
                 return redirect(url_for("single_use", err="t"))
             else:
-                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, picture="/static/nopic.jpg", single_use=True, tickets=pass_obj.tickets)
+                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets)
                 db.session.add(user)
                 db.session.delete(pass_obj)
                 db.session.commit()

@@ -19,9 +19,23 @@
         <title>SFStudio: Login</title>
     </head>
     <body>
+        <style>
+            main{
+                height: 100vh;
+                display: grid;
+                place-items: center center;
+            }
+            main .content{
+                display: grid;
+                place-items: center center;
+            }
+        </style>
         <main>
-            <div><h3>Please sign in</h3></div>
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <div class="content">
+                <!--Put logo here-->
+                <div><h3>I'm centered :)</h3></div>
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
         </main>
     </body>
 </html>
