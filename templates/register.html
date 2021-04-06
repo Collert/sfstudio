@@ -7,13 +7,17 @@ Register
 {% block main %}
 <style>
     form{
-        width: 10vw;
+        width: 50vw;
+    }
+    form *{
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 </style>
 <form action="/register" method="POST">
     <h3>Перший раз завідуєте? Введіть номер абонемента щоб з'єднати ваші аккаунти</h3>
     <input type="number" class="form-control" required name="pass_id" placeholder="Номер абонемента">
-    <div class="col-12">
+    <div style="display: grid; place-items: center center;">
         <button type="submit" class="btn btn-primary">Зареєструватися</button>
     </div>
 </form>

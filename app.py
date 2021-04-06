@@ -226,7 +226,7 @@ def register():
         return render_template("register.html", error=check_error())
     else:
         pass_id = request.form.get("pass_id")
-        pass_obj = Pass.query.get(pass_id)
+        pass_obj = db.session.query(Pass).filter(Pass.id == pass_id).first()
         if not pass_obj:
             flash("Абонемент не знайдено")
             return redirect(url_for("register", err="t"))
