@@ -58,8 +58,8 @@ def events():
     events = db.session.query(Class).order_by(Class.participants.desc()).all()
     relations = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).all()
     participants = {}
-    for class in events:
-        participants[class.id] = []
+    for event in events:
+        participants[event.id] = []
     for relation in relations:
         participants[relation[0].classs].append(relation[1])
     return render_template("events.html", events=events, error=check_error(), participants=participants, user=session)
@@ -297,8 +297,8 @@ def delete_old_class():
     """Delete classes that are over 90 days old"""
     three_months_old = datetime.date.today() - datetime.timedelta(days=90)
     old_classes = db.session.query(Class).filter(Class.end < three_months_old).all()
-    for class in old_classes:
-        db.session.delete(class)
+    for event in old_classes:
+        db.session.delete(event)
     db.session.commit()
 
 if __name__ == "__main__":
