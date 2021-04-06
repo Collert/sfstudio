@@ -24,7 +24,7 @@ class Class(db.Model):
     start = db.Column(db.Date, nullable=False)
     end = db.Column(db.Date, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
-    participants = db.Column(db.Integer, nullable=False, default=0)
+    free = db.Column(db.Integer, nullable=False, default=0)
     location = db.Column(db.String, nullable=False)
     trainer = db.Column(db.String, nullable=False)
 
