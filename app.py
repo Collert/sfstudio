@@ -197,7 +197,7 @@ def login():
             print("=====================================================================================================================")
             print(idinfo["given_name"])
             print("=====================================================================================================================")
-            return redirect(url_for("register"))
+            return redirect("/register")
         else:
             # Update existing info
             user.picture=idinfo["picture"]
@@ -213,7 +213,7 @@ def login():
         session["single_use"] = user.single_use
         session["tickets"] = user.tickets
         return redirect("/")
-    return render_template("login.html", error=session.get("error"), google_signin_client_id=G_CLIENT_ID, user=session)
+    return render_template("login.html", error=check_error(), google_signin_client_id=G_CLIENT_ID, user=session)
     
 @app.route("/register", methods=["GET", "POST"])
 def register():
