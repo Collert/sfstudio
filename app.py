@@ -181,7 +181,6 @@ def mass_activate():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in using Google sign-in"""
-    session["error"] = False
     if request.method == "POST":
         token = request.form["idtoken"]
         try:
