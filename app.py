@@ -182,15 +182,18 @@ def mass_activate():
 def login():
     """Log user in using Google sign-in"""
     if request.method == "POST":
-        token = request.form["idtoken"]
         try:
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), G_CLIENT_ID)
+            guserid = session["google_creds"]["sub"]
+        except KeyError:
+            token = request.form["idtoken"]
+            try:
+                idinfo = id_token.verify_oauth2_token(token, requests.Request(), G_CLIENT_ID)
 
-            # ID token is valid. Get the user's Google Account ID from the decoded token.
-            guserid = idinfo["sub"]
-        except ValueError:
-            # Invalid token
-            pass
+                # ID token is valid. Get the user's Google Account ID from the decoded token.
+                guserid = idinfo["sub"]
+            except ValueError:
+                # Invalid token
+                pass
         user = User.query.filter_by(google_id=guserid).first()
         if not user:
             session["google_creds"] = idinfo
