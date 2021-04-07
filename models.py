@@ -10,7 +10,7 @@ class User(db.Model):
     last = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=True) # Null if single-use
     google_id = db.Column(db.String, nullable=True) # Null if single-use
-    role = db.Column(db.String, nullable=False, default="customer")
+    role = db.Column(db.Integer, nullable=False, default=1)
     picture = db.Column(db.String, nullable=False, default="/static/nopic.jpg")
     subscribed = db.Column(db.Boolean, nullable=True, default=True) # Null if single-use
     # Single-use passes 

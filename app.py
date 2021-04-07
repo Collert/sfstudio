@@ -82,7 +82,7 @@ def event(id):
         return redirect("/")
 
 @app.route("/event/new", methods=["GET", "POST"])
-@coach_required
+@level_2
 @login_required
 def create():
     """Create an event"""
@@ -101,7 +101,7 @@ def profile_own():
     return render_template("profile.html", profile=session, own=True, user=session, error=check_error())
 
 @app.route("/profile/<int:id>")
-@admin_required
+@level_3
 @login_required
 def profile(id):
     """Look up person's profile"""
@@ -110,7 +110,7 @@ def profile(id):
     return render_template("profile.html", error=check_error(), profile=user, own=False, classes=classes, user=session)
 
 @app.route("/profile/<int:id>/edit", methods=["GET", "POST"])
-@admin_required
+@level_3
 @login_required
 def edit_person(id):
     """Edit person's profile"""
@@ -131,14 +131,14 @@ def edit_person(id):
         return redirect(f"/profile/{id}")
 
 @app.route("/lookup", methods=["GET", "POST"])
-@admin_required
+@level_3
 @login_required
 def lookup():
     """Lookup a user form"""
     return render_template("lookup.html", error=check_error(), user=session)
 
 @app.route("/pass/new", methods=["GET", "POST"])
-@admin_required
+@level_3
 @login_required
 def new_pass():
     if request.method == "GET":
@@ -151,7 +151,7 @@ def new_pass():
         return redirect("/")
 
 @app.route("/pass/activate/mass")
-@admin_required
+@level_3
 @login_required
 def mass_activate():
     if request.method == "GET":
