@@ -14,7 +14,9 @@ class User(db.Model):
     picture = db.Column(db.String, nullable=False, default="/static/nopic.jpg")
     subscribed = db.Column(db.Boolean, nullable=True, default=True) # Null if single-use
     tickets = db.Column(db.Integer, nullable=False)
-    activation_date = db.Column(db.Date, nullable=False)
+    activation_date = db.Column(db.Date, nullable=True)
+    called_sick = db.Column(db.Boolean, nullable=False, default=False)
+    sick_start = db.Column(db.Date, nullable=True)
     # Single-use passes 
     single_use = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -42,6 +44,7 @@ class Pass(db.Model):
     last = db.Column(db.String, nullable=False)
     single_use = db.Column(db.Boolean, nullable=False, default=False)
     tickets = db.Column(db.Integer, nullable=True, default=1)
+    activation_date = db.Column(db.Date, nullable=False)
 
 class Product(db.Model):
     __tablename__="products"

@@ -39,6 +39,8 @@ db.init_app(app)
 
 #Constants
 G_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+SICK_PERIOD = 7 # Days
+PASS_EXPIRATION_PERIOD = 30 # Days
 
 ##########
 # Routes #
@@ -241,9 +243,6 @@ def login():
         session["role"] = user.role
         session["picture"] = user.picture
         session["pass_id"] = user.pass_id
-        session["subscribed"] = user.subscribed
-        session["single_use"] = user.single_use
-        session["tickets"] = user.tickets
         return redirect("/")
     return render_template("login.html", error=check_error(), google_signin_client_id=G_CLIENT_ID, user=session)
     
@@ -274,9 +273,6 @@ def register():
             session["role"] = user.role
             session["picture"] = user.picture
             session["pass_id"] = user.pass_id
-            session["subscribed"] = user.subscribed
-            session["single_use"] = user.single_use
-            session["tickets"] = user.tickets
             return redirect("/")
         
 @app.route("/single_use", methods=["GET", "POST"])
@@ -303,9 +299,6 @@ def single_use():
         session["role"] = user.role
         session["picture"] = user.picture
         session["pass_id"] = user.pass_id
-        session["subscribed"] = user.subscribed
-        session["single_use"] = user.single_use
-        session["tickets"] = user.tickets
         return redirect("/")
 
 ##############
@@ -335,6 +328,23 @@ def delete_old_class():
     for event in old_classes:
         db.session.delete(event)
     db.session.commit()
+
+@app.cli.command("expire_pass")
+def expire_pass():
+    """Remove all remaining tickets from user if not used within a month"""
+    users = db.session.query(User).all()
+    today = datetime.date.today()
+    for user in users:
+        exp_date = user.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD)
+        if today < exp_date:
+            continue
+        elif user.called_sick and today < (exp_date + datetime.timedelta(days=SICK_PERIOD)):
+            continue
+        user.tickets = 0
+        user.called_sick = False
+        user.activation_date = None
+        user.sick_start = None
+        db.session.commit()
 
 @app.cli.command("financial_report")
 def financial_report():
