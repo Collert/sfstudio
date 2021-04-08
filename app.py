@@ -45,17 +45,15 @@ G_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 ##########
 
 @app.route("/")
-@login_required
 def home():
     """Display homepage"""
     events = db.session.query(Relationship, Class).join(Class, Class.id == Relationship.classs).filter(Relationship.participant == 1).all()
     return render_template("home.html", error=check_error(), user=session, events=events)
 
 @app.route("/events", methods=["GET", "POST"])
-@login_required
 def events():
     """Display all available events"""
-    events = db.session.query(Class).order_by(Class.participants.desc()).all()
+    events = db.session.query(Class).order_by(Class.free).all()
     relations = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).all()
     participants = {}
     for event in events:
@@ -65,7 +63,6 @@ def events():
     return render_template("events.html", events=events, error=check_error(), participants=participants, user=session)
 
 @app.route("/event/<int:id>", methods=["GET", "POST"])
-@login_required
 def event(id):
     """Display summary of a class"""
     if request.method == "GET":
@@ -73,12 +70,15 @@ def event(id):
         participants = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).filter(Relationship.classs == id)
         return render_template("event.html", event=event, error=check_error(), participants=participants, user=session)
     else:
+        if not session.id:
+            flash("Ви не ввійшли у ваш профіль")
+            return redirect(url_for("home", err="t"))
         event = db.session.query(Class).get(id)
-        event.participants += 1
+        event.free -= 1
         relation = Relationship(classs=event.id, participant=session.id)
         db.session.add(relation)
         db.session.commit()
-        flash("")
+        flash("Ви зареєструвалися на це заняття")
         return redirect("/")
 
 @app.route("/event/new", methods=["GET", "POST"])
@@ -106,6 +106,9 @@ def profile_own():
 def profile(id):
     """Look up person's profile"""
     user = db.session.query(User).get(id)
+    if not user:
+        flash("Людини з даним ID не знайдено")
+        return redirect(url_for("lookup", err="t"))
     classes = db.session.query(Relationship, Class).join(Class, Class.id == Relationship.classs).filter(Relationship.participant == id).all()
     return render_template("profile.html", error=check_error(), profile=user, own=False, classes=classes, user=session)
 
@@ -116,7 +119,7 @@ def edit_person(id):
     """Edit person's profile"""
     user = db.session.query(User).get(id)
     if not user:
-        flash("")
+        flash("Людини з даним ID не знайдено")
         return redirect(url_for("lookup", err="t"))
     if request.method == "GET":
         return render_template("user-edit.html", profile=user, user=session, error=check_error())
@@ -135,7 +138,28 @@ def edit_person(id):
 @login_required
 def lookup():
     """Lookup a user form"""
-    return render_template("lookup.html", error=check_error(), user=session)
+    if request.method == "GET":
+        return render_template("lookup.html", error=check_error(), user=session)
+    else:
+        first = f"%{request.form.get('first')}%"
+        last = f"%{request.form.get('last')}%"
+        email = request.form.get('email')
+        pass_num = request.form.get('pass_num')
+        if first and last:
+            users = db.session.query(User).filter(User.first.ilike(first), User.last.ilike(last)).all()
+        elif first:
+            users = db.session.query(User).filter(User.first.ilike(first)).all()
+        elif last:
+            users = db.session.query(User).filter(User.last.ilike(last)).all()
+        elif email:
+            users = db.session.query(User).filter(User.email == email).all()
+        elif pass_num:
+            users = db.session.query(User).filter(User.pass_id == pass_num).all()
+        if not users:
+            flash("Людини за даними параметрами не знайдено")
+            return redirect(url_for("lookup", err="t"))
+        else:
+            return render_template("lookup.html", error=check_error(), user=session, users=users)
 
 @app.route("/pass/new", methods=["GET", "POST"])
 @level_3
@@ -144,7 +168,10 @@ def new_pass():
     if request.method == "GET":
         return render_template("new_pass.html", error=check_error(), user=session)
     else:
-        new_pass = Pass(id=request.form.get("pass_id"), first=request.form.get("first"), last=request.form.get("last"), single_use=request.form.get("single_use"))
+        new_pass = Pass(id=request.form.get("pass_id"), first=request.form.get("first"), last=request.form.get("last"), single_use=request.form.get("single_use"), tickets=request.form.get("tickets"))
+        if Pass.query.get(new_pass.id):
+            flash("Абонемент з таким номером уже існує")
+            return redirect(url_for("new_pass", err="t"))
         db.session.add(new_pass)
         db.session.commit()
         flash("Абонемент додано")
@@ -154,6 +181,10 @@ def new_pass():
 @level_3
 @login_required
 def mass_activate():
+    """
+    REDUNDANT
+    Mass update users and deactivate the ones who didn't pay the monthly fee
+    """
     if request.method == "GET":
         return render_template("mass_activate.html", error=check_error(), user=session)
     else:
@@ -198,9 +229,6 @@ def login():
         user = User.query.filter_by(google_id=guserid).first()
         if not user:
             session["google_creds"] = idinfo
-            print("=====================================================================================================================")
-            print(idinfo["given_name"])
-            print("=====================================================================================================================")
             return redirect("/register")
         else:
             # Update existing info
@@ -307,6 +335,10 @@ def delete_old_class():
     for event in old_classes:
         db.session.delete(event)
     db.session.commit()
+
+@app.cli.command("financial_report")
+def financial_report():
+    """Display monthly financial report"""
 
 if __name__ == "__main__":
     with app.app_context():
