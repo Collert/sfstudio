@@ -9,6 +9,7 @@ import csv
 import codecs
 
 from sqlalchemy import create_engine, or_, and_, sql
+from sqlalchemy.ext.declarative.api import as_declarative
 from sqlalchemy.orm import query, relation, relationship, scoped_session, sessionmaker
 from flask import Flask, flash, redirect, render_template, request, session, jsonify, make_response, send_from_directory, url_for
 from flask_session import Session
@@ -101,6 +102,26 @@ def create():
 @login_required
 def profile_own():
     return render_template("profile.html", profile=session, own=True, user=session, error=check_error())
+
+@app.route("/call_sick", methods=["POST"])
+@login_required
+def call_sick():
+    user = db.session.query(User).get(session["id"])
+    if user.tickets < 1:
+        flash("Ваш абонемент не активний")
+        return redirect(url_for("home", err="t"))
+    user.called_sick = True
+    date = request.form.get("date")
+    if date:
+        if date > user.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD):
+            flash("Введена вами дата знаходиться після завершення вашого абонементу. Будь-ласка виберіть іншу дату.")
+            return redirect(url_for("home", err="t"))
+        user.sick_start = date
+    else:
+        user.sick_start = datetime.date.today()
+    db.session.commit()
+    flash("Абонемент заморожено. Бажаємо швидкого одужання!")
+    return redirect(url_for("home"))
 
 @app.route("/profile/<int:id>")
 @level_3
