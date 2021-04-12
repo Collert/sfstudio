@@ -90,8 +90,8 @@ def event(id):
         return redirect("/")
 
 @app.route("/event/new", methods=["GET", "POST"])
-@level_2
 @login_required
+@level_2
 def create():
     """Create an event"""
     if request.method == "GET":
@@ -132,8 +132,8 @@ def call_sick(id):
     return redirect(url_for("home"))
 
 @app.route("/profile/<int:id>")
-@level_3
 @login_required
+@level_3
 def profile(id):
     """Look up person's profile"""
     user = db.session.query(User).get(id)
@@ -144,8 +144,8 @@ def profile(id):
     return render_template("profile.html", error=check_error(), profile=user, own=False, classes=classes, user=session)
 
 @app.route("/profile/<int:id>/edit", methods=["GET", "POST"])
-@level_3
 @login_required
+@level_3
 def edit_person(id):
     """Edit person's profile"""
     user = db.session.query(User).get(id)
@@ -165,8 +165,8 @@ def edit_person(id):
         return redirect(f"/profile/{id}")
 
 @app.route("/lookup", methods=["GET", "POST"])
-@level_3
 @login_required
+@level_3
 def lookup():
     """Lookup a user form"""
     if request.method == "GET":
@@ -193,8 +193,8 @@ def lookup():
             return render_template("lookup.html", error=check_error(), user=session, users=users)
 
 @app.route("/pass/new/<int:id>", methods=["GET", "POST"])
-@level_3
 @login_required
+@level_3
 def new_pass(id):
     if id == SU_PASS_ID:
         single_use = True
@@ -230,8 +230,8 @@ def new_pass(id):
         return redirect("/")
 
 @app.route("/pass/activate/mass")
-@level_3
 @login_required
+@level_3
 def mass_activate():
     """
     REDUNDANT

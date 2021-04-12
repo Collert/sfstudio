@@ -18,7 +18,7 @@ def login_required(f):
 def level_4(f):
     """
     Decorate routes to require level 4 previleges (Super Admin).
-    IMPORTANT: Place this decorator in between the @app.route and @login_required
+    IMPORTANT: Place this decorator in after @login_required
     Documentation here:
     http://flask.pocoo.org/docs/1.0/patterns/viewdecorators/
     """
@@ -33,7 +33,7 @@ def level_4(f):
 def level_3(f):
     """
     Decorate routes to require level 3 previleges (Admin).
-    IMPORTANT: Place this decorator in between the @app.route and @login_required
+    IMPORTANT: Place this decorator in after @login_required
     Documentation here:
     http://flask.pocoo.org/docs/1.0/patterns/viewdecorators/
     """
@@ -48,7 +48,7 @@ def level_3(f):
 def level_2(f):
     """
     Decorate routes to require level 2 previleges (Coach).
-    IMPORTANT: Place this decorator in between the @app.route and @login_required
+    IMPORTANT: Place this decorator in after @login_required
     Documentation here:
     http://flask.pocoo.org/docs/1.0/patterns/viewdecorators/
     """
