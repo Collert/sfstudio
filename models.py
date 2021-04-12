@@ -66,5 +66,5 @@ class PassTickets(db.Model):
 
 class Virgins(db.Model):
     __tablename__="virgins"
-    person = db.Column(db.Integer, nullable=False)
+    person = db.Column(db.Integer, primary_key=True)
     product = db.Column(db.Integer, nullable=False)

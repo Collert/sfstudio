@@ -338,7 +338,7 @@ def single_use():
                 flash("Абонемент не знайдено")
                 return redirect(url_for("single_use", err="t"))
             else:
-                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets, pass_id=pass_obj.id)
+                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets)
                 db.session.add(user)
                 db.session.delete(pass_obj)
                 db.session.commit()
@@ -417,8 +417,8 @@ def financial_report():
         payouts[coach.id] = {}
         money = float(0)
         classes = db.session.query(Class).filter(Class.coach == coach.id, Class.start > month_ago).all()
-        for class in classes:
-            relations = db.session.query(Relationship).filter(Relationship.classs == class.id).all()
+        for clas in classes:
+            relations = db.session.query(Relationship).filter(Relationship.classs == clas.id).all()
             for participant in relations:
                 pas = db.session.query(Pass).filter(Pass.owner == participant.participant).first()
                 used_times = pas.initial_tickets - pas.tickets
