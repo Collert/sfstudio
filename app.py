@@ -1,5 +1,7 @@
+from functools import singledispatch
 from http.client import error
 from logging import log
+from operator import sub
 from re import U
 from tempfile import mkdtemp
 import os
@@ -15,6 +17,7 @@ from flask import Flask, flash, redirect, render_template, request, session, jso
 from flask_session import Session
 from sqlalchemy.sql.expression import true
 from sqlalchemy.sql.functions import user
+from werkzeug.datastructures import ViewItems
 from werkzeug.utils import secure_filename
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -42,6 +45,8 @@ db.init_app(app)
 G_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 SICK_PERIOD = 7 # Days
 PASS_EXPIRATION_PERIOD = 30 # Days
+COACH_COEFICIENT = 0.5
+SU_PASS_ID = 6942042069
 
 ##########
 # Routes #
@@ -56,7 +61,7 @@ def home():
 @app.route("/events", methods=["GET", "POST"])
 def events():
     """Display all available events"""
-    events = db.session.query(Class).order_by(Class.free).all()
+    events = db.session.query(Class).order_by(Class.start.desc(), Class.free.desc()).all()
     relations = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).all()
     participants = {}
     for event in events:
@@ -103,22 +108,25 @@ def create():
 def profile_own():
     return render_template("profile.html", profile=session, own=True, user=session, error=check_error())
 
-@app.route("/call_sick", methods=["POST"])
+@app.route("/call_sick/<int:id>", methods=["POST"])
 @login_required
-def call_sick():
-    user = db.session.query(User).get(session["id"])
-    if user.tickets < 1:
+def call_sick(id):
+    if session["id"] != id and session["role"] < 3:
+        flash("Не достатньо привілегій щоб декларувати людину хворою. Cпробуйте знову з власним ID користувача.")
+        return redirect(url_for("home", err="t"))
+    pas = db.session.query(Pass).filter(Pass.owner == session["id"])
+    if pas.tickets < 1:
         flash("Ваш абонемент не активний")
         return redirect(url_for("home", err="t"))
-    user.called_sick = True
+    pas.called_sick = True
     date = request.form.get("date")
     if date:
-        if date > user.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD):
+        if date > pas.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD):
             flash("Введена вами дата знаходиться після завершення вашого абонементу. Будь-ласка виберіть іншу дату.")
             return redirect(url_for("home", err="t"))
-        user.sick_start = date
+        pas.sick_start = date
     else:
-        user.sick_start = datetime.date.today()
+        pas.sick_start = datetime.date.today()
     db.session.commit()
     flash("Абонемент заморожено. Бажаємо швидкого одужання!")
     return redirect(url_for("home"))
@@ -184,18 +192,39 @@ def lookup():
         else:
             return render_template("lookup.html", error=check_error(), user=session, users=users)
 
-@app.route("/pass/new", methods=["GET", "POST"])
+@app.route("/pass/new/<int:id>", methods=["GET", "POST"])
 @level_3
 @login_required
-def new_pass():
-    if request.method == "GET":
-        return render_template("new_pass.html", error=check_error(), user=session)
+def new_pass(id):
+    if id == SU_PASS_ID:
+        single_use = True
     else:
-        new_pass = Pass(id=request.form.get("pass_id"), first=request.form.get("first"), last=request.form.get("last"), single_use=request.form.get("single_use"), tickets=request.form.get("tickets"))
-        if Pass.query.get(new_pass.id):
-            flash("Абонемент з таким номером уже існує")
-            return redirect(url_for("new_pass", err="t"))
+        single_use = False
+    if request.method == "GET":
+        tried_products = db.session.query(Virgins).filter(Virgins.person == id).all()
+        products = db.session.query(Product).all()
+        subject = db.session.query(User).get(id)
+        return render_template("new_pass.html", error=check_error(), user=session, products=products, tried_products=tried_products, subject=subject)
+    else:
+        tickets = request.form.get("tickets")
+        price = request.form.get("price")
+        activation = datetime.date.today()
+        if single_use:
+            first = request.form.get("first")
+            last = request.form.get("last")
+            owner = None
+        else:
+            user = db.session.query(User).get(id)
+            if not user:
+                flash("User does not exist")
+                return redirect(url_for("lookup", err="t"))
+            first = user.first
+            last = user.last
+            owner = user.id
+        new_pass = Pass(first=first, last=last, single_use=single_use, tickets=tickets, value=price, activation_date=activation, owner=owner, initial_tickets=tickets)
         db.session.add(new_pass)
+        if not single_use:
+            user.pass_id = new_pass.id
         db.session.commit()
         flash("Абонемент додано")
         return redirect("/")
@@ -309,7 +338,7 @@ def single_use():
                 flash("Абонемент не знайдено")
                 return redirect(url_for("single_use", err="t"))
             else:
-                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets)
+                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets, pass_id=pass_obj.id)
                 db.session.add(user)
                 db.session.delete(pass_obj)
                 db.session.commit()
@@ -362,14 +391,43 @@ def expire_pass():
         elif user.called_sick and today < (exp_date + datetime.timedelta(days=SICK_PERIOD)):
             continue
         user.tickets = 0
-        user.called_sick = False
-        user.activation_date = None
-        user.sick_start = None
+        user.pass_id = None
+        pas = db.session.query(Pass).get(user.pass_id)
+        if pas:
+            db.session.delete(pas)
+        db.session.commit()
+    passes = db.session.query(Pass).all()
+    for pas in passes:
+        exp_date = pas.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD)
+        if today < exp_date:
+            continue
+        elif pas.called_sick and today < (exp_date + datetime.timedelta(days=SICK_PERIOD)):
+            continue
+        db.session.delete(pas)
         db.session.commit()
 
 @app.cli.command("financial_report")
 def financial_report():
     """Display monthly financial report"""
+    today = datetime.date.today()
+    month_ago = today - datetime.timedelta(days=30)
+    coaches = db.session.query(User).filter(User.role == 2).all()
+    payouts = {}
+    for coach in coaches:
+        payouts[coach.id] = {}
+        money = float(0)
+        classes = db.session.query(Class).filter(Class.coach == coach.id, Class.start > month_ago).all()
+        for class in classes:
+            relations = db.session.query(Relationship).filter(Relationship.classs == class.id).all()
+            for participant in relations:
+                pas = db.session.query(Pass).filter(Pass.owner == participant.participant).first()
+                used_times = pas.initial_tickets - pas.tickets
+                add = pas.value / used_times * COACH_COEFICIENT
+                money += add
+        payouts[coach.id]["id"] = coach.id
+        payouts[coach.id]["first"] = coach.first
+        payouts[coach.id]["last"] = coach.last
+        payouts[coach.id]["ammount"] = round(money, 2)
 
 if __name__ == "__main__":
     with app.app_context():

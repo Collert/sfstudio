@@ -5,7 +5,7 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__="users"
     id = db.Column(db.Integer, primary_key=True)
-    pass_id = db.Column(db.Integer, nullable=False)
+    pass_id = db.Column(db.Integer, nullable=True)
     first = db.Column(db.String, nullable=False)
     last = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=True) # Null if single-use
@@ -13,11 +13,8 @@ class User(db.Model):
     role = db.Column(db.Integer, nullable=False, default=1)
     picture = db.Column(db.String, nullable=False, default="/static/nopic.jpg")
     subscribed = db.Column(db.Boolean, nullable=True, default=True) # Null if single-use
-    tickets = db.Column(db.Integer, nullable=False)
-    activation_date = db.Column(db.Date, nullable=True)
-    called_sick = db.Column(db.Boolean, nullable=False, default=False)
-    sick_start = db.Column(db.Date, nullable=True)
     # Single-use passes 
+    tickets = db.Column(db.Integer, nullable=True)
     single_use = db.Column(db.Boolean, nullable=False, default=False)
 
 class Class(db.Model):
@@ -29,7 +26,7 @@ class Class(db.Model):
     capacity = db.Column(db.Integer, nullable=False)
     free = db.Column(db.Integer, nullable=False, default=0)
     location = db.Column(db.String, nullable=False)
-    trainer = db.Column(db.String, nullable=False)
+    coach = db.Column(db.Integer, nullable=False)
 
 class Relationship(db.Model):
     __tablename__="relations"
@@ -44,17 +41,30 @@ class Pass(db.Model):
     last = db.Column(db.String, nullable=False)
     single_use = db.Column(db.Boolean, nullable=False, default=False)
     tickets = db.Column(db.Integer, nullable=True, default=1)
+    value = db.Column(db.Numeric, nullable=False)
     activation_date = db.Column(db.Date, nullable=False)
+    called_sick = db.Column(db.Boolean, nullable=False, default=False)
+    sick_start = db.Column(db.Date, nullable=False)
+    owner = db.Column(db.Integer, nullable=True) # Null if unclaimed single-use
+    initial_tickets = db.Column(db.Integer, nullable=False)
 
 class Product(db.Model):
     __tablename__="products"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
-    price = db.Column(db.Numeric(2), nullable=True)
+    price = db.Column(db.Numeric, nullable=True)
+    virgin = db.Column(db.Numeric, nullable=True)
+    pice_from = db.Column(db.Numeric, nullable=True)
+    virgin_from = db.Column(db.Numeric, nullable=True)
 
 class PassTickets(db.Model):
     __tablename__="pass_tickets"
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, nullable=False)
     tickets = db.Column(db.Integer, nullable=False)
+
+class Virgins(db.Model):
+    __tablename__="virgins"
+    person = db.Column(db.Integer, nullable=False)
+    product = db.Column(db.Integer, nullable=False)
