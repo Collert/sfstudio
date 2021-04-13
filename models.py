@@ -57,11 +57,6 @@ class Product(db.Model):
     virgin = db.Column(db.Numeric, nullable=True)
     pice_from = db.Column(db.Numeric, nullable=True)
     virgin_from = db.Column(db.Numeric, nullable=True)
-
-class PassTickets(db.Model):
-    __tablename__="pass_tickets"
-    id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, nullable=False)
     tickets = db.Column(db.Integer, nullable=False)
 
 class Virgins(db.Model):

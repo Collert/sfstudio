@@ -3,6 +3,7 @@ from http.client import error
 from logging import log
 from operator import sub
 from re import U
+import re
 from tempfile import mkdtemp
 import os
 from threading import Event
@@ -260,6 +261,59 @@ def mass_activate():
                 db.session.commit()
         flash("Абонементи оновлено")
         return redirect("/")
+
+@app.route("/products")
+@login_required
+@level_4
+def products():
+    """Display all available products"""
+    products = db.session.query(Product).all()
+    return render_template("products.html", error=check_error(), user=session, products=products)
+
+
+@app.route("/products/<int:id>", methods=["GET", "POST"])
+@login_required
+@level_4
+def product(id):
+    """Display delected product"""
+    if request.method == "GET":
+        product = db.session.query(Product).get(id)
+        return render_template("product.html", error=check_error(), user=session, product=product)
+    else: # Editing
+        product = db.session.query(Product).get(id)
+        product.title = request.form.get("title")
+        product.description = request.form.get("description")
+        product.price = request.form.get("price")
+        product.virgin = request.form.get("virgin")
+        product.tickets = request.form.get("tickets")
+        db.session.commit()
+        flash("Продукт редаговано")
+        return redirect(f"/products/{id}")
+
+@app.route("/products/new", methods=["GET", "POST"])
+@login_required
+@level_4
+def new_product():
+    """Create a new product"""
+    if request.method == "GET":
+        return render_template("product.html", error=check_error(), user=session, product=None)
+    else: # Editing
+        product = Product
+        product.title = request.form.get("title")
+        product.description = request.form.get("description")
+        if request.form.get("price-from"):
+            product.price_from = request.form.get("price")
+        else:
+            product.price = request.form.get("price")
+        if request.form.get("virgin-from"):
+            product.virgin_from = request.form.get("virgin")
+        else:
+            product.virgin = request.form.get("virgin")
+        product.tickets = request.form.get("tickets")
+        db.session.add(product)
+        db.session.commit()
+        flash("Продукт створено")
+        return redirect(f"/products/{product.id}")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
