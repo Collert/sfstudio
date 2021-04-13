@@ -40,7 +40,8 @@
                 <span>Знайти клієнта</span>
             </div>
         </a>
-        {% elif user.role > 2 %}
+        {% endif %}
+        {% if user.role > 2 %}
         <a class="menu-item" href="/pass/new/6942042069">
             <div class="icon">
                 <span class="far fa-plus-square"></span>
@@ -49,16 +50,15 @@
                 <span>Створити абонемент</span>
             </div>
         </a>
-        {% elif user.role > 3 %}
-        <a class="menu-item" href="">
+        {% endif %}
+        <a class="menu-item" href="/products">
             <div class="icon">
-                <span class="fas fa-database"></span>
+                <span class="fas fa-ticket-alt"></span>
             </div>
             <div class="option-text">
-                <span>Каталог продуктів</span>
+                <span>Абонементи</span>
             </div>
         </a>
-        {% endif %}
         {% endif %}
     </div>
     </div>
