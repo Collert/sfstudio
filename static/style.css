@@ -1,23 +1,85 @@
+:root{
+    --background-color: #171327;
+    --background-2-color: #262d46;
+    --text-color: white;
+    --acent-color: #0abacc;
+}
+
 /* Mobile layout */
 
-@media (max-width: 425px){
+@media (max-width: 500px){
     body{
         display: grid;
         grid-gap: 2rem;
         grid-template-rows: auto 1fr auto;
     }
+    div.menu-item{
+        grid-template-rows: 1fr auto;
+    }
 }
 
 /* Desktop layout */
 
-@media (min-width: 425px){
+@media (min-width: 500px){
     body{
         display: grid;
-        grid-template-columns: minmax(150px, 25%) 1fr;
+        grid-template-columns: minmax(200px, 20%) 1fr;
+    }
+    a.menu-item{
+        transition: ease 0.2s all;
+        grid-template-columns: minmax(75px, 25%) 1fr;
+        padding: 20px;
+        display: grid;
+        place-items: center center;
+        text-decoration: none;
+        text-align: start;
+        border-color: var(--acent-color);
+    }
+    .menu-item:hover{
+        transition: ease 0.3s all;
+        border-width: 20px;
+        background-color: var(--background-2-color);
+        border-color: var(--background-2-color);
+        border-style: solid;
+        border-radius: 10px;
+        padding: 0px;
+        margin-left: 30px;
+    }
+    div.menu-items{
+        display: grid;
+        place-items: center stretch;
+        height: 70vh;
+    }
+    .menu-item .option-text{
+        color: var(--text-color);
+        font-size: 25px;
+        width: 100%;
+        display: grid;
+        place-items: center start;
+        padding-left: 10px;
     }
 }
 
 /* Universal rules */
+
+.icon span{
+    font-size: 40px;
+    color: var(--text-color);
+}
+
+body{
+    background-color: var(--background-color);
+}
+
+img.profile-pic{
+    border-radius: 50%;
+    max-height: 75px;
+    max-width: 75px;
+    background-color: var(--background-2-color);
+    border-color: var(--background-2-color);
+    border-style: solid;
+    border-width: 3px;
+}
 
 main{
     min-height: 100vh;

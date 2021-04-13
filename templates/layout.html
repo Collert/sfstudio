@@ -13,6 +13,7 @@
         <link href="/static/fontawesome-free-5.15.2-web/css/all.css" rel="stylesheet">
 
         <!--Custom stylesheet-->
+        <link href="/static/favicon.png" rel="icon">
         <link href="/static/style.css" rel="stylesheet">
 
         <title>SFStudio: {% block title %}{% endblock %}</title>
@@ -33,6 +34,7 @@
                     </div>
                 {% endif %}
             {% endif %}
+            {% include "header.html" %}
             <script>
                 $(document).ready(function() {
                 setTimeout(function() {
