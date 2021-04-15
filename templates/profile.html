@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/profile/profile.css" rel="stylesheet">
+<div>
+    <div class="pfp">
+        <img src="{{user.picture}}">
+    </div>
+    <div class="name">
+        {{user.first}} {{user.last}}
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="title">
+                Активний абонемент:
+            </div>
+            <div class="pass">
+                <div class="pass title">{{product.title}}</div>
+                <div class="pass-qr">
+                    <img src="https://chart.googleapis.com/chart?chs=230x230&cht=qr&chl={{pas.id}}">
+                    <small>#{{pas.id}}</small>
+                </div>
+                <div class="info">
+                    <div class="info-block">
+                        <div>Занять залишилося:</div><span>{{pas.tickets}}</span>
+                    </div>
+                    <div class="info-block">
+                        <div>Дата активації:</div><span>{{pas.activation_date.strftime('%d/%m')}}</span>
+                    </div>
+                    <div class="info-block">
+                        <div>Вичерпується через:</div><span>{{days_left}}</span><br>{% if days_left == 1 %} день {% elif 1 < days_left < 5 %} дні {% else %} днів {% endif %}
+                    </div>
+                    {% if pas.called_sick %}
+                    <div class="info-block">
+                        <div>Заморожений до:</div><span>{{end_sick.strftime('%d/%m')}}</span>
+                    </div>
+                    {% else %}
+                    <a class="info-block sick" href="/call_sick/{{user.id}}">
+                        <div>Задекларувати хворобу</div><span class="far fa-tired"></span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="title">
+                Майбутні заняття:
+            </div>
+            {% for class in events %}
+            <div class="pass class main">
+                <div class="class title grid">
+                    <h2>{{ class[0].title }}</h2>
+                    <span style="font-size: 16px;"><b>Коли: </b>{{class[0].start.strftime('%d/%m %H:%M')}}</span>
+                </div>
+                <div class="class content">
+                    <div class="class location">
+                        <h3>Локація:</h3>
+                        {{class[0].location}}
+                    </div>
+                    <div class="grid bot">
+                        <div class="class coach grid">
+                            <h3>Тренер:</h3>
+                            <img src="{{class[1].picture}}">
+                            <span style="text-align: center;">{{class[1].first}} {{class[1].last}}</span>
+                        </div>
+                        <div>
+                            <a class="btn btn-primary grid" href="/event/{{class[1].id}}" role="button"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

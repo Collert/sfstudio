@@ -107,7 +107,13 @@ def create():
 @app.route("/profile")
 @login_required
 def profile_own():
-    return render_template("profile.html", profile=session, own=True, user=session, error=check_error())
+    events = db.session.query(Class, User, Relationship).join(User, User.id == Class.coach).join(Relationship, Relationship.classs == Class.id).filter(Relationship.participant == session["id"]).all() # That's one scary query lmao
+    pas = db.session.query(Pass).filter(Pass.owner == session["id"]).first()
+    if pas:
+        product = db.session.query(Product).filter(Product.tickets == pas.initial_tickets).first()
+        days_left = pas.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD) - datetime.date.today()
+        end_sick = pas.sick_start + datetime.timedelta(days=SICK_PERIOD) if pas.called_sick else None
+    return render_template("profile.html", profile=session, own=True, user=session, error=check_error(), pas=pas, product=product, days_left=days_left.days, end_sick=end_sick, events=events)
 
 @app.route("/call_sick/<int:id>", methods=["POST"])
 @login_required

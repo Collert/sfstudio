@@ -55,9 +55,9 @@ class Product(db.Model):
     description = db.Column(db.String, nullable=False)
     price = db.Column(db.Numeric, nullable=True)
     virgin = db.Column(db.Numeric, nullable=True)
-    pice_from = db.Column(db.Numeric, nullable=True)
+    price_from = db.Column(db.Numeric, nullable=True)
     virgin_from = db.Column(db.Numeric, nullable=True)
-    tickets = db.Column(db.Integer, nullable=False)
+    tickets = db.Column(db.Integer, nullable=True)
 
 class Virgins(db.Model):
     __tablename__="virgins"

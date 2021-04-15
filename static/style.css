@@ -1,9 +1,4 @@
-:root{
-    --background-color: #171327;
-    --background-2-color: #262d46;
-    --text-color: white;
-    --acent-color: #0abacc;
-}
+@import "/static/constants.css";
 
 /* Mobile layout */
 
@@ -47,6 +42,11 @@
 /* Desktop layout */
 
 @media (min-width: 850px){
+    @media(min-height:600px){
+        .header{
+            position: fixed;
+        }
+    }
     div.header{
         padding: 30px;
         height: 100vh;
@@ -70,6 +70,8 @@
         text-decoration: none;
         text-align: start;
         border-color: var(--acent-color);
+        border-width: 0px;
+        border-style: solid;
     }
     .menu-item:hover{
         transition: ease 0.3s all;
@@ -78,8 +80,8 @@
         border-color: var(--background-2-color);
         border-style: solid;
         border-radius: 10px;
-        padding: 0px;
-        margin-left: 30px;
+        transform: translateX(30px);
+        position: relative;
     }
     div.menu-items{
         display: grid;
@@ -94,9 +96,25 @@
         place-items: center start;
         padding-left: 10px;
     }
+    @media (max-width: 1150px){
+        a.menu-item{
+            display: grid;
+            place-items: center center;
+            grid-template-rows: auto 1fr;
+            grid-template-columns: none;
+        }
+        .menu-item .option-text{
+            place-items: center;
+            padding-left: 0;
+        }
+    }
 }
 
 /* Universal rules */
+
+*{
+    color: var(--text-color);
+}
 
 .icon span{
     font-size: 40px;
