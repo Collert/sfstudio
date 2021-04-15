@@ -13,6 +13,7 @@ class User(db.Model):
     role = db.Column(db.Integer, nullable=False, default=1)
     picture = db.Column(db.String, nullable=False, default="/static/nopic.jpg")
     subscribed = db.Column(db.Boolean, nullable=True, default=True) # Null if single-use
+    belt = db.Column(db.Integer, nullable=True) # Null if not staff
     # Single-use passes 
     tickets = db.Column(db.Integer, nullable=True)
     single_use = db.Column(db.Boolean, nullable=False, default=False)
@@ -47,6 +48,14 @@ class Pass(db.Model):
     sick_start = db.Column(db.Date, nullable=False)
     owner = db.Column(db.Integer, nullable=True) # Null if unclaimed single-use
     initial_tickets = db.Column(db.Integer, nullable=False)
+    addons = db.Column(db.Integer, nullable=True) # Null if a pass with no addons
+
+class PassAddon(db.Model):
+    __tablename__="addons"
+    id = db.Column(db.Integer, primary_key=True)
+    personal_training = db.Column(db.Boolean, nullable=False, default=False)
+    dietitian_consultation = db.Column(db.Boolean, nullable=False, default=False)
+
 
 class Product(db.Model):
     __tablename__="products"
@@ -63,3 +72,10 @@ class Virgins(db.Model):
     __tablename__="virgins"
     person = db.Column(db.Integer, primary_key=True)
     product = db.Column(db.Integer, nullable=False)
+
+class Belt(db.Model):
+    __tablename__="badges"
+    id = db.Column(db.Integer, primary_key=True)
+    person = db.Column(db.Integer, nullable=False)
+    coach = db.Column(db.Boolean, nullable=False, default=False)
+    dietitian = db.Column(db.Boolean, nullable=False, default=False)

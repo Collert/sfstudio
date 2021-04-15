@@ -8,10 +8,10 @@ Profile
 <link href="/static/template-extra/profile/profile.css" rel="stylesheet">
 <div>
     <div class="pfp">
-        <img src="{{user.picture}}">
+        <img src="{{profile.picture}}">
     </div>
     <div class="name">
-        {{user.first}} {{user.last}}
+        {{profile.first}} {{profile.last}}
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -39,7 +39,7 @@ Profile
                         <div>Заморожений до:</div><span>{{end_sick.strftime('%d/%m')}}</span>
                     </div>
                     {% else %}
-                    <a class="info-block sick" href="/call_sick/{{user.id}}">
+                    <a class="info-block sick" href="/call_sick/{{profile.id}}">
                         <div>Задекларувати хворобу</div><span class="far fa-tired"></span>
                     </a>
                     {% endif %}
@@ -68,12 +68,48 @@ Profile
                             <span style="text-align: center;">{{class[1].first}} {{class[1].last}}</span>
                         </div>
                         <div>
-                            <a class="btn btn-primary grid" href="/event/{{class[1].id}}" role="button"><i class="fas fa-eye"></i></a>
+                            <a class="btn btn-primary grid" style="height: 8rem;" href="/event/{{class[1].id}}" role="button"><i class="fas fa-eye"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
+        </div>
+        <div class="col-md-6">
+            <div class="title">
+                Інші абонементи:
+            </div>
+            <div class="other-pass">
+                <div class="pass other">
+                    <h3 style="text-align: center;">Індивідуальне заняття з тренером</h3>
+                    <div class="grid" style="margin-top: 10px; margin-bottom: 10px;"><a class="btn btn-primary" href="#" role="button">Забронювати</a></div>
+                </div>
+                <div class="pass other">
+                    <h3 style="text-align: center;">Консультація фітнес-дієтолога</h3>
+                    <div class="grid" style="margin-top: 10px; margin-bottom: 10px;"><a class="btn btn-primary" href="#" role="button">Забронювати</a></div>
+                </div>
+                <div class="pass other">
+                    sdfgsdfg
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="title">
+                Інша інформація про вас:
+            </div>
+            <div class="grid">
+                <div class="middle-split">
+                <span class="left">Номер облікового запису:</span>
+                <span class="right">{{ profile.id }}</span>
+                {% if profile.email %}
+                <span class="left">Електронна адреса:</span>
+                <span class="right">{{ profile.email }}</span>
+                {% endif %}
+                {% if profile.belt %}
+                <span class="left">Відзнаки:</span>
+                {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
