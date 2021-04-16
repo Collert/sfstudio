@@ -18,6 +18,7 @@ Profile
             <div class="title">
                 Активний абонемент:
             </div>
+            {% if pas %}
             <div class="pass">
                 <div class="pass title">{{product.title}}</div>
                 <div class="pass-qr">
@@ -45,6 +46,7 @@ Profile
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="col-md-6">
             <div class="title">
