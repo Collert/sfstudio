@@ -2,6 +2,19 @@ var auth2;
 // Sign in function to pass the user info to session
 function onSignIn(googleUser){
     var id_token = googleUser.getAuthResponse().id_token;
+    var form = document.createElement('form');
+    var input = document.createElement("INPUT").setAttribute("type", "text");
+    document.body.appendChild(form);
+    form.method = 'post';
+    form.action = "/login";
+    form.appendChild(input);
+    input.name = "idtoken";
+    input.value = id_token;
+    form.submit();
+}
+/*
+function onSignIn(googleUser){
+    var id_token = googleUser.getAuthResponse().id_token;
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/login');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -12,6 +25,7 @@ function onSignIn(googleUser){
     xhr.send('idtoken=' + id_token);
     redirectPost("/login");
 }
+*/
 
 function redirectPost(url) {
     var form = document.createElement('form');
