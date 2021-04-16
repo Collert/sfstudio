@@ -18,8 +18,8 @@ Profile
             <div class="title">
                 Активний абонемент:
             </div>
-            {% if pas %}
             <div class="pass">
+                {% if pas %}
                 <div class="pass title">{{product.title}}</div>
                 <div class="pass-qr">
                     <img src="https://chart.googleapis.com/chart?chs=230x230&cht=qr&chl={{pas.id}}">
@@ -45,8 +45,13 @@ Profile
                     </a>
                     {% endif %}
                 </div>
+                {% else %}
+                <div class="pass title">У вас немає активного абонемента</div>
+                <div class="info-block">
+                    <span>¯\_(ツ)_/¯</span>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
         <div class="col-md-6">
             <div class="title">
