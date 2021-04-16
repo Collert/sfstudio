@@ -20,7 +20,7 @@
                 <img class="profile-pic" src="{% if user %}{{user.picture}}{% else %}/static/fallback/no-pfp.png{% endif %}">
             </div>
             <div class="option-text">
-                <span>{% if user %} Мій профіль {% else %} Увійти {% endif %}</span>
+                <span>{% if user.id %} Мій профіль {% else %} Увійти {% endif %}</span>
             </div>
         </a>
         <a class="menu-item" href="/events">
@@ -52,6 +52,7 @@
             </div>
         </a>
         {% endif %}
+        {% endif %}
         <a class="menu-item" href="/products">
             <div class="icon">
                 <span class="fas fa-ticket-alt"></span>
@@ -60,7 +61,6 @@
                 <span>Абонементи</span>
             </div>
         </a>
-        {% endif %}
     </div>
     </div>
 </div>

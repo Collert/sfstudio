@@ -11,9 +11,9 @@ Home
     <h1>Ласкаво просимо</h1>
 </div>
 <div class="fade-in-bottom-2">
-    <h1>До SFStudio{%if user%},{%else%}!{%endif%}</h1>
+    <h1>До SFStudio{%if user.id%},{%else%}!{%endif%}</h1>
 </div>
-{% if user %}
+{% if user.id %}
 <div class="flicker-in-1 name">
     <h1 id="name">{{user.first}}</h1>
 </div>
