@@ -24,14 +24,11 @@ function onSignIn(googleUser){
     };
     console.log(id_token);
     xhr.send('idtoken=' + id_token);
-    redirectPost("/login");
+    redirectPost();
 }
 
-function redirectPost(url) {
-    var form = document.createElement('form');
-    document.body.appendChild(form);
-    form.method = 'post';
-    form.action = url;
+function redirectPost() {
+    var form = document.querySelector("#redirect_post");
     form.submit();
 }
 
