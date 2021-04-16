@@ -31,7 +31,7 @@
                 <span>Заняття</span>
             </div>
         </a>
-        {% if user %}
+        {% if user.id %}
         {% if user.role > 1 %}
         <a class="menu-item" href="/lookup">
             <div class="icon">

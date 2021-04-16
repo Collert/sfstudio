@@ -56,7 +56,6 @@ SU_PASS_ID = 6942042069
 @app.route("/")
 def home():
     """Display homepage"""
-    events = db.session.query(Relationship, Class).join(Class, Class.id == Relationship.classs).filter(Relationship.participant == 1).all()
     return render_template("home.html", error=check_error(), user=session, events=events)
 
 @app.route("/events", methods=["GET", "POST"])
@@ -337,8 +336,6 @@ def login():
             guserid = idinfo["sub"]
         except KeyError:
             token = request.form["idtoken"]
-            print(request.headers)
-            print(token)
             try:
                 idinfo = id_token.verify_oauth2_token(token, requests.Request(), G_CLIENT_ID)
 
