@@ -340,13 +340,13 @@ def login():
                 idinfo = id_token.verify_oauth2_token(token, requests.Request(), G_CLIENT_ID)
 
                 # ID token is valid. Get the user's Google Account ID from the decoded token.
-                guserid = idinfo["sub"]
+                session["google_creds"] = idinfo
+                return
             except ValueError:
                 # Invalid token
                 pass
         user = User.query.filter_by(google_id=guserid).first()
         if not user:
-            session["google_creds"] = idinfo
             return redirect("/register")
         else:
             # Update existing info
