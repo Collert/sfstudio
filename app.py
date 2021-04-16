@@ -366,7 +366,7 @@ def login():
 def register():
     """Register a user if a pass is available"""
     if request.method == "GET":
-        return render_template("register.html", error=check_error())
+        return render_template("register.html", error=check_error(), user=session)
     else:
         pass_id = request.form.get("pass_id")
         pass_obj = db.session.query(Pass).filter(Pass.id == pass_id).first()
@@ -395,7 +395,7 @@ def register():
 def single_use():
     """Log a person in with a single use pass"""
     if request.method == "GET":
-        return render_template("single_use.html", error=check_error())
+        return render_template("single_use.html", error=check_error(), user=session)
     else:
         user = db.session.query(User).filter(User.pass_id == request.form.get("pass_id")).first()
         if not user:
