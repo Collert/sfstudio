@@ -337,6 +337,7 @@ def login():
             guserid = idinfo["sub"]
         except KeyError:
             token = request.form["idtoken"]
+            print(request.headers)
             print(token)
             try:
                 idinfo = id_token.verify_oauth2_token(token, requests.Request(), G_CLIENT_ID)
