@@ -114,13 +114,13 @@ def profile_own():
     belt = db.session.query(Belt).filter(Belt.id == user.belt).first() if user.belt else None
     if pas:
         product = db.session.query(Product).filter(Product.tickets == pas.initial_tickets).first()
-        days_left = pas.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD) - datetime.date.today()
+        days_left = (pas.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD) - datetime.date.today()).days
         end_sick = pas.sick_start + datetime.timedelta(days=SICK_PERIOD) if pas.called_sick else None
     else:
         product = None
         days_left = None
         end_sick = None
-    return render_template("profile.html", profile=user, own=True, user=session, error=check_error(), pas=pas, product=product, days_left=days_left.days, end_sick=end_sick, events=events, more=more, belt=belt)
+    return render_template("profile.html", profile=user, own=True, user=session, error=check_error(), pas=pas, product=product, days_left=days_left, end_sick=end_sick, events=events, more=more, belt=belt)
 
 @app.route("/call_sick/<int:id>", methods=["POST"])
 @login_required
