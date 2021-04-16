@@ -87,17 +87,12 @@ Profile
                 Інші абонементи:
             </div>
             <div class="other-pass">
+                {% for pas in more %}
                 <div class="pass other">
-                    <h3 style="text-align: center;">Індивідуальне заняття з тренером</h3>
-                    <div class="grid" style="margin-top: 10px; margin-bottom: 10px;"><a class="btn btn-primary" href="#" role="button">Забронювати</a></div>
+                    <h3 style="text-align: center;">{{pas[1].title}}</h3>
+                    <div class="grid" style="margin-top: 20px; margin-bottom: 10px;"><a class="btn btn-primary" href="#" role="button">Забронювати</a></div>
                 </div>
-                <div class="pass other">
-                    <h3 style="text-align: center;">Консультація фітнес-дієтолога</h3>
-                    <div class="grid" style="margin-top: 10px; margin-bottom: 10px;"><a class="btn btn-primary" href="#" role="button">Забронювати</a></div>
-                </div>
-                <div class="pass other">
-                    sdfgsdfg
-                </div>
+                {% endfor %}
             </div>
         </div>
         <div class="col-md-6">

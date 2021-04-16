@@ -45,10 +45,11 @@ class Pass(db.Model):
     value = db.Column(db.Numeric, nullable=False)
     activation_date = db.Column(db.Date, nullable=False)
     called_sick = db.Column(db.Boolean, nullable=False, default=False)
-    sick_start = db.Column(db.Date, nullable=False)
+    sick_start = db.Column(db.Date, nullable=True)
     owner = db.Column(db.Integer, nullable=True) # Null if unclaimed single-use
     initial_tickets = db.Column(db.Integer, nullable=False)
     addons = db.Column(db.Integer, nullable=True) # Null if a pass with no addons
+    product = db.Column(db.Integer, nullable=False)
 
 class PassAddon(db.Model):
     __tablename__="addons"
