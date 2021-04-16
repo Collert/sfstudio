@@ -359,7 +359,7 @@ def login():
         session["role"] = user.role
         session["picture"] = user.picture
         session["pass_id"] = user.pass_id
-        return redirect("/")
+        return redirect(url_for("home"))
     return render_template("login.html", error=check_error(), google_signin_client_id=G_CLIENT_ID, user=session)
     
 @app.route("/register", methods=["GET", "POST"])
