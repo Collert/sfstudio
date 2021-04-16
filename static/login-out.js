@@ -1,5 +1,6 @@
 var auth2;
 // Sign in function to pass the user info to session
+/*
 function onSignIn(googleUser){
     var id_token = googleUser.getAuthResponse().id_token;
     var form = document.createElement('form');
@@ -12,7 +13,7 @@ function onSignIn(googleUser){
     input.value = id_token;
     form.submit();
 }
-/*
+*/
 function onSignIn(googleUser){
     var id_token = googleUser.getAuthResponse().id_token;
     var xhr = new XMLHttpRequest();
@@ -25,7 +26,6 @@ function onSignIn(googleUser){
     xhr.send('idtoken=' + id_token);
     redirectPost("/login");
 }
-*/
 
 function redirectPost(url) {
     var form = document.createElement('form');

@@ -332,16 +332,20 @@ def new_product():
 def login():
     """Log user in using Google sign-in"""
     if request.method == "POST":
-        token = request.form.get("idtoken")
-        print(token)
         try:
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), G_CLIENT_ID)
-
-            # ID token is valid. Get the user's Google Account ID from the decoded token.
+            idinfo = session["google_creds"]
             guserid = idinfo["sub"]
-        except ValueError:
-            # Invalid token
-            pass
+        except KeyError:
+            token = request.form["idtoken"]
+            print(token)
+            try:
+                idinfo = id_token.verify_oauth2_token(token, requests.Request(), G_CLIENT_ID)
+
+                # ID token is valid. Get the user's Google Account ID from the decoded token.
+                guserid = idinfo["sub"]
+            except ValueError:
+                # Invalid token
+                pass
         user = User.query.filter_by(google_id=guserid).first()
         if not user:
             session["google_creds"] = idinfo
