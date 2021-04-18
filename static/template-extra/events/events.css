@@ -1,0 +1,91 @@
+@import "/static/constants.css";
+
+.main{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(475px, 1fr));
+}
+.class-card{
+    display: grid;
+    background-color: var(--background-2-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px;
+    grid-template-columns: 1fr 150px;
+    gap: 10px;
+}
+.left{
+    display: grid;
+    place-items: center;
+    grid-template-rows: 1fr auto;
+}
+.right{
+    display: grid;
+    place-items: center;
+    grid-template-rows: 1fr auto;
+}
+.title{
+    font-size: 45px;
+    font-weight: bold;
+}
+.location{
+    font-size: 20px;
+    font-style: italic;
+}
+.time-frame{
+    width: 100%;
+    text-align: start;
+}
+.date{
+    font-size: 25px;
+    color: var(--acent-color);
+    font-weight: bold;
+}
+.time{
+    font-size: 18px;
+    font-style: italic;
+}
+.participants{
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    place-items: center start;
+    width: 100%;
+    margin-top: 7px;
+}
+.pictures{
+    height: 40px;
+}
+.pictures img{
+    width: 40px;
+    border-radius: 50%;
+    margin-right: -20px;
+}
+.names{
+    display: grid;
+    place-items: center start;
+}
+.free-spots span{
+    display: grid;
+    place-items: center;
+    color: var(--acent-color);
+    font-size: 35px;
+    font-weight: bold;
+}
+.coach{
+    display: grid;
+    place-items: center;
+    grid-template-rows: auto auto 1fr;
+}
+.coach img{
+    border-radius: 50%;
+    max-height: 75px;
+    max-width: 75px;
+    background-color: var(--background-color);
+    border-color: var(--background-color);
+    border-style: solid;
+    border-width: 3px;
+}
+.btn-primary{
+    background-color: var(--acent-color);
+    border-color: var(--acent-color);
+    font-weight: bold;
+}
