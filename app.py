@@ -380,7 +380,6 @@ def register():
             idinfo = session["google_creds"]
             user = User(first=idinfo["given_name"], pass_id=pass_obj.id, last=idinfo["family_name"], email=idinfo["email"], google_id=idinfo["sub"], picture=idinfo["picture"])
             db.session.add(user)
-            db.session.delete(pass_obj)
             db.session.commit()
             session["id"] = user.id
             session["first"] = user.first
@@ -406,7 +405,6 @@ def single_use():
             else:
                 user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets)
                 db.session.add(user)
-                db.session.delete(pass_obj)
                 db.session.commit()
         session["id"] = user.id
         session["first"] = user.first
