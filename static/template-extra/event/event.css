@@ -1,0 +1,103 @@
+@import "/static/constants.css";
+
+.main{
+    display: grid;
+    width: 100%;
+    padding: 10px;
+}
+.left,
+.right{
+    display: grid;
+    place-items: center;
+}
+.title{
+    font-size: 70px;
+    font-weight: bold;
+}
+.location{
+    font-size: 20px;
+    font-style: italic;
+}
+.participants{
+    width: 100%;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+.person{
+    display: grid;
+    place-items: center;
+    padding: 10px;
+    background-color: var(--background-2-color);
+    border-radius: 10px;
+}
+.person img{
+    width: 100px;
+    border-radius: 50%;
+}
+.person div{
+    font-size: 20px;
+    text-align: center;
+}
+.time-frame{
+    width: 100%;
+    margin-bottom: 20px;
+    display: grid;
+    place-items: center;
+}
+.date{
+    font-size: 25px;
+    color: var(--acent-color);
+    font-weight: bold;
+}
+.time{
+    font-size: 18px;
+    font-style: italic;
+}
+.free-spots span{
+    display: grid;
+    place-items: center;
+    color: var(--acent-color);
+    font-size: 35px;
+    font-weight: bold;
+}
+.coach{
+    display: grid;
+    place-items: center;
+    grid-template-rows: auto auto 1fr;
+}
+.coach img{
+    border-radius: 50%;
+    height: 125px;
+    width: 125px;
+    background-color: var(--background-2-color);
+    border-color: var(--background-2-color);
+    border-style: solid;
+    border-width: 5px;
+}
+.coach span{
+    font-size: 20px;
+    font-weight: bold;
+}
+.btn-primary{
+    background-color: var(--acent-color);
+    border-color: var(--acent-color);
+    font-weight: bold;
+    font-size: 20px;
+}
+.register{
+    display: grid;
+    place-items: center;
+    padding: 25px;
+}
+@media(min-width: 850px){
+    .main{
+        grid-template-columns: 1fr 25%;
+    }
+    .left{
+        place-items: center start;
+    }
+    .time-frame{
+        place-items: center start;
+    }
+}
