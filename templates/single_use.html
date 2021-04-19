@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Single use
+{% endblock %}
+
+{% block main %}
+<style>
+    @import "/static/constants.css";
+    form{
+        width: 50vw;
+        display: grid;
+        place-items: center;
+    }
+    form *{
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    .main{
+        display: grid;
+        place-items: center;
+    }
+    .btn-primary{
+        background-color: var(--acent-color);
+        border-color: var(--acent-color);
+        font-weight: bold;
+        font-size: 20px;
+    }
+    h1{
+        margin: 20px;
+    }
+</style>
+<div class="main">
+<h3 style="text-align: center;">Використовуєте разовий абонемент?<br> Введіть номер абонемента щоб користуватися додатком</h3>
+<form action="/register" method="POST">
+    <input style="width: 30vw;" type="number" class="form-control" required name="pass_id" placeholder="Номер абонемента">
+    <div style="display: grid; place-items: center center;">
+        <button type="submit" class="btn btn-primary">Увійти</button>
+    </div>
+</form>
+</div>
+{% endblock %}
