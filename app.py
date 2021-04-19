@@ -402,10 +402,12 @@ def single_use():
             if not pass_obj:
                 flash("Абонемент не знайдено")
                 return redirect(url_for("single_use", err="t"))
-            else:
-                user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets)
-                db.session.add(user)
-                db.session.commit()
+            if not pass_obj.single_use:
+                flash("У вас постійний абонемент. Зареєструйтеся як постійний користувач.")
+                return redirect(url_for("login", err="t"))
+            user = User(first=pass_obj.first, pass_id=pass_obj.id, last=pass_obj.last, email=None, google_id=None, single_use=True, tickets=pass_obj.tickets)
+            db.session.add(user)
+            db.session.commit()
         session["id"] = user.id
         session["first"] = user.first
         session["last"] = user.last

@@ -20,21 +20,40 @@
     </head>
     <body>
         <style>
+            @import "/static/constants.css";
             main{
                 height: 100vh;
                 display: grid;
                 place-items: center center;
+                background-color: var(--background-color);
             }
             main .content{
                 display: grid;
                 place-items: center center;
+                background-color: var(--background-2-color);
+                border-radius: 10px;
+                padding: 10px;
+            }
+            h3,h1{
+                color: var(--text-color);
+                margin: 10px;
+                text-align: center;
+            }
+            .btn-primary{
+                background-color: var(--acent-color);
+                border-color: var(--acent-color);
+                font-weight: bold;
+                font-size: 20px;
+                margin: 10px;
             }
         </style>
         <main>
             <div class="content">
                 <!--Put logo here-->
-                <div><h3>I'm centered :)</h3></div>
+                <h3>Увійдіть за допомогою <br>вашого аккаунту Google</h3>
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <h1>АБО</h1>
+                <a class="btn btn-primary" href="/single_use" role="button">Увійти як разовий користувач</a>
             </div>
             <form hidden method="POST" action="/login" id="redirect_post"></form>
         </main>
