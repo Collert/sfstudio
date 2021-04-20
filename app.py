@@ -61,11 +61,11 @@ def home():
 @app.route("/events", methods=["GET", "POST"])
 def events():
     """Display all available events"""
-    events = db.session.query(Class).order_by(Class.start.desc(), Class.free.desc()).all()
+    events = db.session.query(Class, User).join(User, User.id == Class.coach).order_by(Class.start.desc(), Class.free.desc()).all()
     relations = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).all()
     participants = {}
     for event in events:
-        participants[event.id] = []
+        participants[event[0].id] = []
     for relation in relations:
         participants[relation[0].classs].append(relation[1])
     return render_template("events.html", events=events, error=check_error(), participants=participants, user=session)
