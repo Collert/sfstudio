@@ -95,9 +95,10 @@ def event(id):
 def create():
     """Create an event"""
     if request.method == "GET":
-        return render_template("create.html", user=session, error=check_error())
+        coaches = db.session.query(User).filter(User.role >= 2).all()
+        return render_template("create.html", user=session, error=check_error(), coaches=coaches)
     else:
-        event = Class(title=request.form.get("title"), start=request.form.get("start"), end=request.form.get("end"), capacity=request.form.get("capacity"), location=request.form.get("location"), trainer=request.form.get("trainer"))
+        event = Class(title=request.form.get("title").strip(), start=request.form.get("start"), end=request.form.get("end"), capacity=request.form.get("capacity"), location=request.form.get("location"), coach=request.form.get("coach"), free=request.form.get("capacity"))
         db.session.add(event)
         db.session.commit()
         flash("Заняття створено")
