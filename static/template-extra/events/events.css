@@ -3,6 +3,8 @@
 .main{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(475px, 1fr));
+    width: 100%;
+    padding-left: 50px;
 }
 .class-card{
     display: grid;
@@ -26,6 +28,11 @@
 .title{
     font-size: 45px;
     font-weight: bold;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
 }
 .location{
     font-size: 20px;

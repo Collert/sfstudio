@@ -24,6 +24,7 @@ Home
             <span class="date">{{event.end.strftime('%d/%m')}},</span> <span class="time">{{event.end.strftime('%H:%M')}}</span>
             {% endif %}
         </div>
+        {% if participants %}
         <h3>Хто буде з вами:</h3>
         <div class="participants">
             {% for person in participants %}
@@ -35,6 +36,7 @@ Home
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
     <div class="right">
         <div class="free-spots">

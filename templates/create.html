@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<script>
+pictures = []
+</script>
+<link href="/static/template-extra/event/event.css" rel="stylesheet">
+<style>
+    ::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+    input, select{
+        background-color: var(--background-color); 
+        border-radius: 7px;
+    }
+</style>
+<form class="main" action="/event/new" method="POST" onsubmit="getValues()">
+    <div class="left">
+        <div contenteditable id="title" class="title">
+            Назва
+        </div>
+        <input name="title" id="true-title" hidden>
+        <input list="select" placeholder="Зал" style="background-color: var(--background-color); border-radius: 7px;" required class="location" name="location">
+        <datalist id="select">
+            <option disabled hidden selected>Зал</option>
+            <option value="Зелений Зал">Зелений Зал</option>
+            <option value="Зал З Каміном">Зал З Каміном</option>
+            <option value="Центральний Зал">Центральний Зал</option>
+        </datalist>
+        <div class="time-frame">
+            <h2>Коли:</h2>
+            Від: <input type="datetime-local" name="start" class="date">
+            До: <input type="datetime-local" name="end" class="date">
+        </div>
+    </div>
+    <div class="right">
+        <div class="free-spots">
+            <h3 style="text-align: center; margin-bottom: 0;">Вільних місць: </h3><span id="spots" contenteditable>10</span>
+            <input name="capacity" id="true-spots" hidden>
+        </div>
+        <div class="coach">
+            <h3>Тренер:</h3>
+            <img src="/static/fallback/no-pfp.jpg" id="coach_pic">
+            <select style="background-color: var(--background-color); border-radius: 7px; margin: 10px;" required name="coach" id="coach">
+                {% if user.role >= 3 %}
+                <option disabled hidden selected>Тренер</option>
+                {% for coach in coaches %}
+                <option value="{{coach.id}}">{{coach.first}} {{coach.last}}</option>
+                {% endfor %}
+                {% else %}
+                <option value="{{user.id}}" selected>{{user.first}} {{user.last}}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="register">
+            <button type="submit" class="btn btn-primary">Створити</button>
+        </div>
+    </div>
+</form>
+<div>
+{% for coach in coaches %}
+<span hidden id="current-id">{{coach.id}}</span>
+<span hidden id="current-pic">{{ coach.picture }}</span>
+<script>
+    var pic = document.querySelector('#current-pic');
+    var id = document.querySelector('#current-id');
+    pictures[id.innerHTML] = pic.innerHTML; 
+    console.log(pic.innerHTML);
+    pic.id = "";
+    id.id = "";
+</script>
+{% endfor %}
+</div>
+<script>
+    $("#spots").keypress(function(e) {
+        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+    });
+    document.querySelector("#coach").onchange = changePic
+
+    function changePic(){
+        var coach = document.querySelector("#coach").value
+        var picture = document.querySelector("#coach_pic")
+        picture.src = pictures[coach]
+    }
+
+    function getValues(){
+        var titleCont = document.querySelector("#title");
+        var title = document.querySelector("#true-title");
+        var spotsCont = document.querySelector("#spots");
+        var spots = document.querySelector("#true-spots");
+        title.value = titleCont.innerHTML;
+        spots.value = spotsCont.innerHTML;
+    }
+
+</script>
+{% endblock %}
