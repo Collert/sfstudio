@@ -60,4 +60,13 @@ Home
     </div>
     {% endfor %}
 </div>
+{% if user.role and user.role >= 3 %}
+<div class="add">
+    <a href="/event/new">
+    <div>
+        <i class="fas fa-plus-circle"><span>Створити<br> заняття</span></i>
+    </div>
+    </a>
+</div>
+{% endif %}
 {% endblock %}
