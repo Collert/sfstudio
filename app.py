@@ -343,7 +343,7 @@ def login():
                 # ID token is valid. Get the user's Google Account ID from the decoded token.
                 session["google_creds"] = idinfo
                 print(f"User logged in: {idinfo['given_name']} {idinfo['family_name']}: {idinfo['email']}")
-                return render_template("<h1>lol</h1>")
+                return "lol"
             except ValueError:
                 # Invalid token
                 pass
