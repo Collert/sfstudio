@@ -75,8 +75,9 @@ def event(id):
     """Display summary of a class"""
     if request.method == "GET":
         event = db.session.query(Class).get(id)
-        participants = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).filter(Relationship.classs == id)
-        return render_template("event.html", event=event, error=check_error(), participants=participants, user=session)
+        participants = db.session.query(Relationship, User).join(User, User.id == Relationship.participant).filter(Relationship.classs == id).all()
+        coach = db.session.query(User).get(event.coach)
+        return render_template("event.html", event=event, error=check_error(), participants=participants, user=session, coach=coach)
     else:
         if not session.id:
             flash("Ви не ввійшли у ваш профіль")
