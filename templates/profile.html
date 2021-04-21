@@ -40,9 +40,28 @@ Profile
                         <div>Заморожений до:</div><span>{{end_sick.strftime('%d/%m')}}</span>
                     </div>
                     {% else %}
-                    <a class="info-block sick" href="/call_sick/{{profile.id}}">
+                    <button type="button" class="info-block sick" data-bs-toggle="modal" data-bs-target="#sickModal">
                         <div>Задекларувати хворобу</div><span class="far fa-tired"></span>
-                    </a>
+                    </button>
+                    <!-- Modal -->
+                    <form action="/call_sick/{{profile.id}}" method="POST" class="modal fade" id="sickModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Задекларувати хворобу?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            ЦЮ ДІЮ ВІДМІНИТИ НЕ МОЖЛИВО!<br>
+                            Декдаруючи хворобу цей абонемент буде заморожено на 7 днів. Під час цього буде не можливо бронювати заняття. Після декларації хвороби, дата закінчення терміну просунеться на тиждень вперед.
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Відмінити</button>
+                            <button type="button" class="btn btn-primary">Декларувати</button>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
                     {% endif %}
                 </div>
                 {% else %}
@@ -111,6 +130,15 @@ Profile
                 <span class="left">Відзнаки:</span>
                 {% endif %}
                 </div>
+            </div>
+            {% if not own %}
+            {% if user.role >= 3 %}
+            <a class="btn btn-primary grid" href="/profile/{{profile.id}}/edit" role="button">Редагувати профіль</a>
+            {% elif user.role == 1 %}
+
+            {% endif %}
+            {% endif %}
+            <div>
             </div>
         </div>
     </div>

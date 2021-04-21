@@ -4,7 +4,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(475px, 1fr));
     width: 100%;
-    padding-left: 50px;
 }
 .class-card{
     display: grid;

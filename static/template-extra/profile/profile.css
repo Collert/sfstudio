@@ -54,6 +54,12 @@
 .info-block span.far{
     margin-top: 0.25em;
 }
+.info-block.sick{
+    background-color: var(--background-2-color);
+    border-radius: 10px;
+    border-style: none;
+    transition: ease 0.3s all;
+}
 .info-block.sick:hover{
     background-color: var(--background-color);
     border-radius: 10px;
@@ -139,4 +145,7 @@
 .pass.other{
     min-width: 0;
     margin: 0;
+}
+.modal-content{
+    background-color: var(--background-2-color);
 }
