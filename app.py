@@ -79,12 +79,12 @@ def event(id):
         coach = db.session.query(User).get(event.coach)
         return render_template("event.html", event=event, error=check_error(), participants=participants, user=session, coach=coach)
     else:
-        if not session.id:
+        if not session["id"]:
             flash("Ви не ввійшли у ваш профіль")
             return redirect(url_for("home", err="t"))
         event = db.session.query(Class).get(id)
         event.free -= 1
-        relation = Relationship(classs=event.id, participant=session.id)
+        relation = Relationship(classs=event.id, participant=session["id"])
         db.session.add(relation)
         db.session.commit()
         flash("Ви зареєструвалися на це заняття")

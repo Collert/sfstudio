@@ -34,11 +34,13 @@ Home
                 </div>
                 <div class="names">
                     {% if participants[class[0].id] %}
-                    {% for person in range([2, participants[class[0].id]|length]|min) %}
+                    {% for person in range([3, participants[class[0].id]|length]|min) %}
                     {{participants[class[0].id][person].first}}{% if participants[class[0].id]|length <= 3 %}{% if person + 1 != participants[class[0].id]|length %}, {% endif %}{% else %},{% endif %}
                     {% endfor %}
                     {% if participants[class[0].id]|length > 3 %}
                     та ще {{participants[class[0].id]|length - 3}} {% if participants[class[0].id]|length - 3 == 1 %} людина буде {% else %} людей будуть {% endif %} там.
+                    {% elif participants[class[0].id]|length == 1 %}
+                    буде там.
                     {% else %}
                     будуть там.
                     {% endif %}
