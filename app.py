@@ -83,6 +83,9 @@ def event(id):
             flash("Ви не ввійшли у ваш профіль")
             return redirect(url_for("home", err="t"))
         event = db.session.query(Class).get(id)
+        if event.free < 1:
+            flash("Заняття повне")
+            return redirect(url_for(f"event({id})", err="t"))
         event.free -= 1
         relation = Relationship(classs=event.id, participant=session["id"])
         db.session.add(relation)

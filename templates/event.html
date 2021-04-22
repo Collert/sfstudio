@@ -50,6 +50,8 @@ Home
         <form class="register" action="/event/{{event.id}}" method="POST">
             {% if user.id %}
             <button type="submit" class="btn btn-primary">Зареєструватися</button>
+            {% elif event.free < 1 %}
+            <button type="button" disabled class="btn btn-secondary" style="font-weight: bold; font-size: 20px;">Немає вільних місць</button>
             {% else %}
             <button type="submit" disabled class="btn btn-secondary" style="font-weight: bold; font-size: 20px;">Увійдіть щоб зареєструватися</button>
             {% endif %}
