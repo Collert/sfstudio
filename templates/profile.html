@@ -71,6 +71,11 @@ Profile
                 </div>
                 {% endif %}
             </div>
+            {% if user.role >= 3 %}
+            <div class="grid">
+                <a class="btn btn-bold hor" href="/pass/new/{{profile.id}}" role="button"><i class="fas fa-plus-circle icon"><span class="text">Додати абонемент</span></i></a>
+            </div>
+            {% endif %}
         </div>
         <div class="col-md-6">
             <div class="title">
@@ -120,20 +125,22 @@ Profile
             </div>
             <div class="grid">
                 <div class="middle-split">
-                <span class="left">Номер облікового запису:</span>
-                <span class="right">{{ profile.id }}</span>
-                {% if profile.email %}
-                <span class="left">Електронна адреса:</span>
-                <span class="right">{{ profile.email }}</span>
-                {% endif %}
-                {% if profile.belt %}
-                <span class="left">Відзнаки:</span>
-                {% endif %}
+                    <span class="left">Номер облікового запису:</span>
+                    <span class="right">{{ profile.id }}</span>
+                    {% if profile.email %}
+                    <span class="left">Електронна адреса:</span>
+                    <span class="right">{{ profile.email }}</span>
+                    {% endif %}
+                    {% if profile.belt %}
+                    <span class="left">Відзнаки:</span>
+                    {% endif %}
                 </div>
             </div>
             {% if not own %}
             {% if user.role >= 3 %}
-            <a class="btn btn-primary grid" href="/profile/{{profile.id}}/edit" role="button">Редагувати профіль</a>
+            <div class="grid">
+            <a class="btn btn-primary" href="/profile/{{profile.id}}/edit" role="button">Редагувати профіль</a>
+            </div>
             {% elif user.role == 1 %}
 
             {% endif %}

@@ -14,7 +14,7 @@
     font-size: 60px;
     margin: 15px;
 }
-.col-md-6 div.title{
+div.title{
     font-size: 30px;
     text-align: center;
 }
@@ -126,6 +126,7 @@
 .middle-split{
     display: grid;
     grid-template-columns: 50% 50%;
+    width: 100%;
 }
 .middle-split *{
     margin: 5px;
@@ -135,12 +136,15 @@
     font-weight: bold;
     display: grid;
     place-items: center end;
+    font-size: 20px;
 }
 .middle-split .right{
     text-align: start;
     display: grid;
     place-items: center start;
-
+    color: var(--acent-color);
+    font-size: 25px;
+    font-weight: 700;
 }
 .pass.other{
     min-width: 0;

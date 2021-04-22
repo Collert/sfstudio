@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Створення абонемента
+{% endblock %}
+
+{% block main %}
+<script>
+    products = JSON.parse('{{ products | tojson | safe}}');
+</script>
+<style>
+    ::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+    input, select{
+        background-color: var(--background-color); 
+        border-radius: 7px;
+    }
+    .col{
+        display: grid;
+        place-items: center;
+    }
+    .pass{
+        width: 50%;
+    }
+    .pass.title{
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 0;
+    }
+</style>
+<link href="/static/template-extra/profile/profile.css" rel="stylesheet">
+<div style="width: 100%;">
+    
+    {% if subject %}
+    <div class="pfp">
+        <img src="{{subject.picture}}">
+    </div>
+    <div class="name">
+        {{subject.first}} {{subject.last}}
+    </div>
+    {% else %}
+    <div class="name">
+        Створення разового абонемента
+    </div>
+    {% endif %}
+    <form action="/pass/new/{% if subject %}{{subject.id}}{%else%}6942069{%endif%}" method="POST" class="row">
+        <div class="col">
+            <div class="title">
+                Абонемент:
+            </div>
+            <div class="pass">
+                <div class="pass title" style="width: 100%;">
+                    <select style="background-color: var(--background-color); border-radius: 7px; min-width: 270px; max-width: 28vw;" required name="product" id="product">
+                        <option disabled hidden selected>Абонемент</option>
+                        {% for product in products %}
+                        <option value="{{products[product].id}}" style="color: var(--text-color);">{{products[product].title}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="pass-qr">
+                    <img src="https://chart.googleapis.com/chart?chs=230x230&cht=qr&chl=https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                    <small>#майбутній номер</small>
+                </div>
+                <div class="info">
+                    <div class="info-block">
+                        <div>Занять доступно:</div><span contenteditable id="tickets">1</span>
+                        <input id="ticketsForm" value="" name="tickets" hidden>
+                    </div>
+                    <div class="info-block">
+                        <div>Вартість:</div><span>&#x20B4;</span> <span contenteditable id="price">0</span>
+                        <input id="priceForm" value="" name="price" hidden>
+                    </div>
+                    {% if not subject %}
+                    <div style="display: grid; place-items: center; gap: 10px;" class="info-block">
+                    <input style="min-width: 165px; max-width: 11vw;" placeholder="Ім'я" autocomplete="off" name="first">
+                    <input placeholder="Прізвище" style="min-width: 165px; max-width: 11vw;" autocomplete="off" name="last">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="grid">
+                {% if subject %}<small>*створення нового абонемента забере звязок зі старим</small>{% endif %}
+                <button type="submit" class="btn btn-bold hor" role="button"><i class="fas fa-plus-circle icon"><span class="text">Створити абонемент</span></i></button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $("#tickets").keypress(function(e) {
+        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+    });
+    $("#price").keypress(function(e) {
+        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+    });
+    var tickets = document.querySelector("#tickets");
+    var ticketsForm = document.querySelector("#ticketsForm");
+    var price = document.querySelector("#price");
+    var priceForm = document.querySelector("#priceForm");
+    var product = document.querySelector("#product");
+    var prod;
+
+    function fillInfo(){
+        for (item in products){
+            if (products[item].id == parseInt(product.value)){
+                console.log("yo");
+                prod = products[item];
+            };
+        };
+        tickets.innerHTML = prod.tickets;
+        price.innerHTML = prod.price;
+    };
+
+    function fillValues(){
+        ticketsForm.value = tickets.value;
+        priceForm.value = price.value;
+    };
+
+    document.querySelector("#product").onchange = fillInfo;
+</script>
+{% endblock %}

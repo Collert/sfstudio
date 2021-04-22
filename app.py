@@ -216,10 +216,25 @@ def new_pass(id):
     else:
         single_use = False
     if request.method == "GET":
+        subject = db.session.query(User).get(id) if not single_use else None
         tried_products = db.session.query(Virgins).filter(Virgins.person == id).all()
+        tried = []
         products = db.session.query(Product).all()
-        subject = db.session.query(User).get(id)
-        return render_template("new_pass.html", error=check_error(), user=session, products=products, tried_products=tried_products, subject=subject)
+        for product in tried_products:
+            tried.append(product.product)
+        user_pricelist = {}
+        for unit in products:
+            product = {}
+            product["id"] = unit.id
+            product["title"] = unit.title
+            product["description"] = unit.description
+            product["tickets"] = unit.tickets
+            if unit.id in tried:
+                product["price"] = float(unit.price if unit.price else (unit.price_from if unit.price_from else 0))
+            else:
+                product["price"] = float(unit.virgin if unit.virgin else (unit.virgin_from if unit.virgin_from else 0))
+            user_pricelist[unit.id] = product
+        return render_template("new_pass.html", error=check_error(), user=session, products=user_pricelist, tried_products=tried_products, subject=subject)
     else:
         tickets = request.form.get("tickets")
         price = request.form.get("price")
