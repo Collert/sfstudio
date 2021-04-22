@@ -129,7 +129,10 @@ def call_sick(id):
     if session["id"] != id and session["role"] < 3:
         flash("Не достатньо привілегій щоб декларувати людину хворою. Cпробуйте знову з власним ID користувача.")
         return redirect(url_for("home", err="t"))
-    pas = db.session.query(Pass).filter(Pass.owner == session["id"])
+    pas = db.session.query(Pass).filter(Pass.owner == session["id"], Pass.addons == None).first()
+    if not pas:
+        flash("У даного користувача немає основного абонемента")
+        return redirect(url_for("home", err="t"))
     if pas.tickets < 1:
         flash("Ваш абонемент не активний")
         return redirect(url_for("home", err="t"))
@@ -155,8 +158,19 @@ def profile(id):
     if not user:
         flash("Людини з даним ID не знайдено")
         return redirect(url_for("lookup", err="t"))
-    classes = db.session.query(Relationship, Class).join(Class, Class.id == Relationship.classs).filter(Relationship.participant == id).all()
-    return render_template("profile.html", error=check_error(), profile=user, own=False, classes=classes, user=session)
+    events = db.session.query(Class, User, Relationship).join(User, User.id == Class.coach).join(Relationship, Relationship.classs == Class.id).filter(Relationship.participant == session["id"]).all() # That's one scary query lmao
+    pas = db.session.query(Pass).filter(Pass.owner == id).first()
+    more = db.session.query(Pass, Product).join(Product, Product.id == Pass.product).filter(Pass.owner == session["id"], Pass.addons != None).all()
+    belt = db.session.query(Belt).filter(Belt.id == user.belt).first() if user.belt else None
+    if pas:
+        product = db.session.query(Product).filter(Product.tickets == pas.initial_tickets).first()
+        days_left = (pas.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD) - datetime.date.today()).days
+        end_sick = pas.sick_start + datetime.timedelta(days=SICK_PERIOD) if pas.called_sick else None
+    else:
+        product = None
+        days_left = None
+        end_sick = None
+    return render_template("profile.html", profile=user, own=False, user=session, error=check_error(), pas=pas, product=product, days_left=days_left, end_sick=end_sick, events=events, more=more, belt=belt)
 
 @app.route("/profile/<int:id>/edit", methods=["GET", "POST"])
 @login_required
@@ -254,6 +268,7 @@ def new_pass(id):
             owner = user.id
         new_pass = Pass(first=first, last=last, single_use=single_use, tickets=tickets, product=product, value=price, activation_date=activation, owner=owner, initial_tickets=tickets)
         db.session.add(new_pass)
+        db.session.commit()
         if not single_use:
             user.pass_id = new_pass.id
         db.session.commit()
