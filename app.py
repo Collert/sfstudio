@@ -236,6 +236,7 @@ def new_pass(id):
             user_pricelist[unit.id] = product
         return render_template("new_pass.html", error=check_error(), user=session, products=user_pricelist, tried_products=tried_products, subject=subject)
     else:
+        product = request.form.get("product")
         tickets = request.form.get("tickets")
         price = request.form.get("price")
         activation = datetime.date.today()
@@ -251,7 +252,7 @@ def new_pass(id):
             first = user.first
             last = user.last
             owner = user.id
-        new_pass = Pass(first=first, last=last, single_use=single_use, tickets=tickets, value=price, activation_date=activation, owner=owner, initial_tickets=tickets)
+        new_pass = Pass(first=first, last=last, single_use=single_use, tickets=tickets, product=product, value=price, activation_date=activation, owner=owner, initial_tickets=tickets)
         db.session.add(new_pass)
         if not single_use:
             user.pass_id = new_pass.id

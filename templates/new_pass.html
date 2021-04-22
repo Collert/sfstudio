@@ -46,7 +46,7 @@
         Створення разового абонемента
     </div>
     {% endif %}
-    <form action="/pass/new/{% if subject %}{{subject.id}}{%else%}6942069{%endif%}" method="POST" class="row">
+    <form action="/pass/new/{% if subject %}{{subject.id}}{%else%}6942069{%endif%}" method="POST" onsubmit="fillValues()" class="row">
         <div class="col">
             <div class="title">
                 Абонемент:
@@ -67,11 +67,11 @@
                 <div class="info">
                     <div class="info-block">
                         <div>Занять доступно:</div><span contenteditable id="tickets">1</span>
-                        <input id="ticketsForm" value="" name="tickets" hidden>
+                        <input id="ticketsForm" name="tickets" hidden>
                     </div>
                     <div class="info-block">
                         <div>Вартість:</div><span>&#x20B4;</span> <span contenteditable id="price">0</span>
-                        <input id="priceForm" value="" name="price" hidden>
+                        <input id="priceForm" name="price" hidden>
                     </div>
                     {% if not subject %}
                     <div style="display: grid; place-items: center; gap: 10px;" class="info-block">
@@ -114,8 +114,8 @@
     };
 
     function fillValues(){
-        ticketsForm.value = tickets.value;
-        priceForm.value = price.value;
+        ticketsForm.value = parseInt(tickets.innerHTML);
+        priceForm.value = parseInt(price.innerHTML);
     };
 
     document.querySelector("#product").onchange = fillInfo;
