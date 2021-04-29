@@ -1,0 +1,46 @@
+@import "/static/constants.css";
+
+.main{
+    width: 100%;
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+.top{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 15px;
+}
+.title{
+    display: grid;
+    place-items: center;
+}
+.price{
+    text-align: center;
+    display: grid;
+    place-items: center;
+    max-width: 90px;
+}
+.description{
+    text-align: center;
+}
+.card-me{
+    gap: 15px;
+    max-width: 280px;
+}
+.price > .number{
+    font-size: 20px;
+    color: var(--acent-color);
+    font-weight: bold;
+    text-overflow: clip;
+}
+.virgin-price{
+    color: #ec2f2f;
+}
+.discount{
+    text-decoration: line-through;
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--text-color);
+}

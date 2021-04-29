@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/products/products.css" rel="stylesheet">
+<div class="main">
+    {% for product in products %}
+    <div class="card-me">
+        <div class="top">
+            <div class="title">
+                <h3>{{product.title}}</h3>
+            </div>
+            <div class="price">
+                <div>Ваша ціна:</div>
+                <div class="number">
+                    {% if product.id in tried or not tried %}
+                    {% if product.price_from %}Від: &#x20B4;{{product.price_from}}{% elif product.price %}&#x20B4;{{product.price}}{% else %}За домовле- ністю{% endif %}
+                    {% else %}
+                    <div>
+                        {% if product.virgin_from %}Від: &#x20B4;<span class="virgin-price">{{product.virgin_from}}</span>{% elif product.virgin %}&#x20B4;<span class="virgin-price">{{product.virgin}}</span>{% else %}За домовле- ністю{% endif %}
+                    </div>
+                    <div>
+                        {% if product.price_from %}<span class="discount">&#x20B4;{{product.price_from}}</span>{% elif product.price %}<span class="discount">&#x20B4;{{product.price}}</span>{% else %}За домовле- ністю{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="bottom">
+            <div class="description">
+                {{product.description}}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

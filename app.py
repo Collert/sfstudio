@@ -324,7 +324,11 @@ def mass_activate():
 def products():
     """Display all available products"""
     products = db.session.query(Product).all()
-    return render_template("products.html", error=check_error(), user=session, products=products)
+    user_virgin = db.session.query(Virgins).filter(Virgins.person == session["id"]).all() if session["id"] else None
+    tried = []
+    for product in user_virgin:
+        tried.append(product.product)
+    return render_template("products.html", error=check_error(), user=session, products=products, tried=tried)
 
 
 @app.route("/products/<int:id>", methods=["GET", "POST"])
