@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/lookup/results.css" rel="stylesheet">
+<div class="main">
+    {% for person in users %}
+    <div class="card-me">
+        <div class="pic">
+            <img src="{{person.picture}}">
+        </div>
+        <div>
+            <h3>{{person.first}} {{person.last}}</h3>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="/profile/{{person.id}}" role="button">Переглянути</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

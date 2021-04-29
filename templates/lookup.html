@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/lookup/lookup.css" rel="stylesheet">
+<div class="main">
+    <form method="POST" action="/lookup" class="card-me name">
+        <h3>Ім'я та Прізвище</h3>
+        <input name="first" autocomplete="off" placeholder="Ім'я">
+        <input name="last" autocomplete="off" placeholder="Прізвище">
+        <button type="submit" class="btn btn-primary">Знайти</button>
+    </form>
+    <form method="POST" action="/lookup" class="card-me email">
+        <h3>Електронна адреса</h3>
+        <input name="email" required autocomplete="off" placeholder="Email">
+        <button type="submit" class="btn btn-primary">Знайти</button>
+    </form>
+    <form method="POST" action="/lookup" class="card-me pass">
+        <h3>Номер абонемента</h3>
+        <input name="pass_num" required autocomplete="off" placeholder="#">
+        <button type="submit" class="btn btn-primary">Знайти</button>
+    </form>
+</div>
+{% endblock %}

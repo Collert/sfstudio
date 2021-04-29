@@ -174,3 +174,16 @@ img.profile-pic{
     border-color: var(--acent-color);
     color: var(--text-color);
 }
+.card-me{
+    display: grid;
+    place-items: center;
+    background-color: var(--background-2-color);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px;
+}
+.btn-primary{
+    background-color: var(--acent-color);
+    border-color: var(--acent-color);
+    font-weight: bold;
+}

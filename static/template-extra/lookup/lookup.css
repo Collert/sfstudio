@@ -1,0 +1,16 @@
+.main{
+    display: grid;
+    width: 100%;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.card-me{
+    min-width: 220px;
+}
+.card-me > input{
+    margin: 5px;
+    background-color: var(--background-color);
+}
+h3{
+    text-align: center;
+}

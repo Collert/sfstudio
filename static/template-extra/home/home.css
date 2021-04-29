@@ -33,6 +33,11 @@ h1{
     display: block;
     color: var(--text-color);
 }
+@media(max-width: 850px){
+    h1{
+        font-size: 60px;
+    }
+}
 div.main div{
     margin-top: 10px;
     margin-bottom: 10px;
