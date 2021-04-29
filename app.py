@@ -204,25 +204,33 @@ def lookup():
     if request.method == "GET":
         return render_template("lookup.html", error=check_error(), user=session)
     else:
-        first = f"%{request.form.get('first')}%"
-        last = f"%{request.form.get('last')}%"
+        first = request.form.get('first')
+        last = request.form.get('last')
         email = request.form.get('email')
         pass_num = request.form.get('pass_num')
         if first and last:
+            first = f"%{first}%"
+            last = f"%{last}%"
             users = db.session.query(User).filter(User.first.ilike(first), User.last.ilike(last)).all()
         elif first:
+            first = f"%{first}%"
             users = db.session.query(User).filter(User.first.ilike(first)).all()
         elif last:
+            last = f"%{last}%"
             users = db.session.query(User).filter(User.last.ilike(last)).all()
         elif email:
             users = db.session.query(User).filter(User.email == email).all()
+            print(users)
         elif pass_num:
             users = db.session.query(User).filter(User.pass_id == pass_num).all()
+        else:
+            flash("Не надано жодної інформації")
+            return redirect(url_for("lookup", err="t"))
         if not users:
             flash("Людини за даними параметрами не знайдено")
             return redirect(url_for("lookup", err="t"))
         else:
-            return render_template("lookup.html", error=check_error(), user=session, users=users)
+            return render_template("lookup_results.html", error=check_error(), user=session, users=users)
 
 @app.route("/pass/new/<int:id>", methods=["GET", "POST"])
 @login_required
