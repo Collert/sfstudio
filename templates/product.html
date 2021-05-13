@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/event/event.css" rel="stylesheet">
+<link href="/static/template-extra/products/product.css" rel="stylesheet">
+
+<form class="main" action="/products/{% if product %}{{product.id}}{% else %}new{% endif %}" method="POST" onsubmit="getValues()">
+    <div class="left">
+        <div contenteditable id="title" class="title">
+            {% if product %}{{product.title}}{% else %}Назва{% endif %}
+        </div>
+        <input name="title" id="true-title" hidden>
+        <div contenteditable id="description" class="description">
+            {% if product %}{{product.description}}{% else %}Опис{% endif %}
+        </div>
+        <input name="description" id="true-description" hidden>
+        
+        <div class="price">
+            <h2 style="text-align: center;">Ціна:</h2>
+            <div>
+                <div class="tag regular">
+                    <h4 style="text-align: center;">Стандартна</h4>
+                    <div><input type="checkbox" class="btn-check" {% if product and product.price_from %}checked{% endif %} id="btn-check-price" name="price-from" autocomplete="off">
+                        <label class="btn btn-outline-primary from" for="btn-check-price">Від</label>
+                        <span>&#x20B4;<span id="price" contenteditable>{% if product and (product.price or product.price==0) %}{{product.price}}{% elif product.price_from %}{{product.price_from}}{% else %}50{% endif %}</span></span>
+                        <input name="price" id="true-price" hidden>
+                    </div>
+                </div>
+                <div class="tag virgin">
+                    <h4 style="text-align: center;">Новим клієнтам</h4>
+                    <div><input type="checkbox" class="btn-check" {% if product and product.virgin_from %}checked{% endif %} id="btn-check-virgin" name="virgin-from" autocomplete="off">
+                        <label class="btn btn-outline-primary from" for="btn-check-virgin">Від</label>
+                        <span>&#x20B4;<span id="virgin" contenteditable>{% if product and (product.virgin or product.virgin==0) %}{{product.virgin}}{% elif product.virgin_from %}{{product.virgin_from}}{% else %}50{% endif %}</span></span>
+                        <input name="virgin" id="true-virgin" hidden>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <div class="free-spots">
+            <h3 style="text-align: center; margin-bottom: 0;">Надає занять: </h3><span id="tickets" contenteditable>{% if product %}{{product.tickets}}{% else %}1{% endif %}</span>
+            <input name="tickets" id="true-tickets" hidden>
+        </div>
+        <div class="register">
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+        </div>
+    </div>
+    {% if user and user.role >= 4 %}
+    <div class="register">
+        <a type="button" href="/deletepass/{{product.id}}" class="btn btn-danger">Видалити продукт</a>
+    </div>
+    {% endif %}
+</form>
+<script>
+    $(".tag").keypress(function(e) {
+        if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+    });
+
+    function getValues(){
+        const titleCont = document.querySelector("#title");
+        const title = document.querySelector("#true-title");
+        const descCont = document.querySelector("#description");
+        const desc = document.querySelector("#true-description");
+        const priceCont = document.querySelector("#price");
+        const price = document.querySelector("#true-price");
+        const virginCont = document.querySelector("#virgin");
+        const virgin = document.querySelector("#true-virgin");
+        const ticketsCont = document.querySelector("#tickets");
+        const tickets = document.querySelector("#true-tickets");
+        title.value = titleCont.innerHTML;
+        desc.value = descCont.innerHTML;
+        price.value = priceCont.innerHTML;
+        virgin.value = virginCont.innerHTML;
+        tickets.value = ticketsCont.innerHTML;
+    }
+</script>
+{% endblock %}

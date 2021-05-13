@@ -8,7 +8,7 @@ Home
 <link href="/static/template-extra/products/products.css" rel="stylesheet">
 <div class="main">
     {% for product in products %}
-    <div class="card-me">
+    {% if user.role and user.role >= 4 %}<a href="products/{{product.id}}" class="card-me">{% else %}<div class="card-me">{% endif %}
         <div class="top">
             <div class="title">
                 <h3>{{product.title}}</h3>
@@ -34,7 +34,7 @@ Home
                 {{product.description}}
             </div>
         </div>
-    </div>
+    {% if user.role and user.role >= 4 %}</a>{% else %}</div>{% endif %}
     {% endfor %}
 </div>
 {% endblock %}

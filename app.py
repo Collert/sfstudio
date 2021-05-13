@@ -341,10 +341,20 @@ def product(id):
         return render_template("product.html", error=check_error(), user=session, product=product)
     else: # Editing
         product = db.session.query(Product).get(id)
-        product.title = request.form.get("title")
-        product.description = request.form.get("description")
-        product.price = request.form.get("price")
-        product.virgin = request.form.get("virgin")
+        product.title = (request.form.get("title")).strip()
+        product.description = (request.form.get("description")).strip()
+        if request.form.get("price-from"):
+            product.price = None
+            product.price_from = request.form.get("price")
+        else:
+            product.price_from = None
+            product.price = request.form.get("price")
+        if request.form.get("virgin-from"):
+            product.virgin = None
+            product.virgin_from = request.form.get("virgin")
+        else:
+            product.virgin_from = None
+            product.virgin = request.form.get("virgin")
         product.tickets = request.form.get("tickets")
         db.session.commit()
         flash("Продукт редаговано")

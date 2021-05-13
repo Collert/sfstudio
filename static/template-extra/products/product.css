@@ -1,0 +1,65 @@
+@import "/static/constants.css";
+
+.description{
+    font-size: 25px;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+.price{
+    width: 100%;
+}
+.price > div{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.tag{
+    display: grid;
+    place-items: center;
+}
+.tag span{
+    font-size: 30px;
+    color: var(--acent-color);
+    font-weight: 600;
+}
+.tag>div{
+    display: grid;
+    grid-template-columns: auto auto;
+}
+.tag >div> span{
+    border: solid;
+    border-width: 2px;
+    border-color: var(--background-2-color);
+    border-radius: 10px;
+    padding: 7px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.from{
+    font-size: 20px;
+    font-weight: 500;
+    border: solid;
+    border-width: 2px;
+    border-color: var(--background-2-color);
+    border-radius: 10px;
+    padding: 7px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    min-width: 2rem;
+}
+.btn-outline-primary{
+    color: var(--acent-color);
+}
+.btn-outline-primary:active,
+.btn-outline-primary:hover{
+    color: var(--text-color);
+    background-color: var(--acent-color);
+    border-color: var(--acent-color);
+}
+.btn-check:checked+.btn-outline-primary{
+    color: var(--text-color);
+    background-color: var(--acent-color);
+    border-color: var(--acent-color);
+}
