@@ -2,8 +2,8 @@
 
 .main{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(475px, 1fr));
-    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+    margin-bottom: 100px;
 }
 .class-card{
     display: grid;
