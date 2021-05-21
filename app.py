@@ -112,7 +112,7 @@ def create():
 @login_required
 def profile_own():
     user = db.session.query(User).get(session["id"])
-    events = db.session.query(Class, User, Relationship).join(User, User.id == Class.coach).join(Relationship, Relationship.classs == Class.id).filter(Relationship.participant == session["id"]).all() # That's one scary query lmao
+    events = db.session.query(Class, User, Relationship).join(User, User.id == Class.coach).join(Relationship, Relationship.classs == Class.id).filter(Relationship.participant == session["id"], Class.end > datetime.datetime.now()).all() # That's one scary query lmao
     pas = db.session.query(Pass).filter(Pass.owner == session["id"], Pass.addons == None).first()
     more = db.session.query(Pass, ProductAddon).join(ProductAddon, ProductAddon.id == Pass.addons).filter(Pass.owner == session["id"], Pass.addons != None).all()
     belt = db.session.query(Belt).filter(Belt.id == user.belt).first() if user.belt else None
