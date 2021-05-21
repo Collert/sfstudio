@@ -36,9 +36,11 @@ Profile
                         <div>Вичерпується через:</div><span>{{days_left}}</span><br>{% if days_left == 1 %} день {% elif 1 < days_left < 5 %} дні {% else %} днів {% endif %}
                     </div>
                     {% if pas.called_sick %}
+                    {% if end_sick > end_sick.today() %}
                     <div class="info-block">
                         <div>Заморожений до:</div><span>{{end_sick.strftime('%d/%m')}}</span>
                     </div>
+                    {% endif %}
                     {% else %}
                     <button type="button" class="info-block sick" data-bs-toggle="modal" data-bs-target="#sickModal">
                         <div>Задекларувати хворобу</div><span class="far fa-tired"></span>
