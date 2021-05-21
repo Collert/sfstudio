@@ -83,6 +83,7 @@ Profile
             <div class="title">
                 Майбутні заняття:
             </div>
+            {% if events|length > 0 %}
             {% for class in events %}
             <div class="pass class main">
                 <div class="class title grid">
@@ -107,6 +108,9 @@ Profile
                 </div>
             </div>
             {% endfor %}
+            {% else %}
+            <h1 style="text-align: center; font-size: 50px; margin: 30px;">Поки пусто...</h1>
+            {% endif %}
         </div>
         <div class="col-md-6">
             <div class="title">
