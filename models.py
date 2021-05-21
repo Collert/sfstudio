@@ -51,11 +51,10 @@ class Pass(db.Model):
     addons = db.Column(db.Integer, nullable=True) # Null if a pass with no addons
     product = db.Column(db.Integer, nullable=False)
 
-class PassAddon(db.Model):
+class ProductAddon(db.Model):
     __tablename__="addons"
     id = db.Column(db.Integer, primary_key=True)
-    personal_training = db.Column(db.Boolean, nullable=False, default=False)
-    dietitian_consultation = db.Column(db.Boolean, nullable=False, default=False)
+    name = db.Column(db.String, nullable=False)
 
 
 class Product(db.Model):
@@ -80,3 +79,9 @@ class Belt(db.Model):
     person = db.Column(db.Integer, nullable=False)
     coach = db.Column(db.Boolean, nullable=False, default=False)
     dietitian = db.Column(db.Boolean, nullable=False, default=False)
+
+class AddonRelation(db.Model):
+    __tablename__="addon_relations"
+    id = db.Column(db.Integer, primary_key=True)
+    product = db.Column(db.Integer, nullable=False)
+    addon = db.Column(db.Integer, nullable=False)
