@@ -8,7 +8,8 @@ Home
 <link href="/static/template-extra/products/products.css" rel="stylesheet">
 <div class="main">
     {% for product in products %}
-    {% if user.role and user.role >= 4 %}<a href="products/{{product.id}}" class="card-me">{% else %}<div class="card-me">{% endif %}
+    {% if user.role and user.role >= 4 %}<a href="products/{{product.id}}" class="card-me content">{% else %}<div class="card-me content">{% endif %}
+        <div class="content-overlay"></div>
         <div class="top">
             <div class="title">
                 <h3>{{product.title}}</h3>
@@ -34,6 +35,11 @@ Home
                 {{product.description}}
             </div>
         </div>
+        {% if user.role and user.role >= 4 %}
+        <div class="content-details">
+            <i class="fas fa-pen"></i>
+        </div>
+        {% endif %}
     {% if user.role and user.role >= 4 %}</a>{% else %}</div>{% endif %}
     {% endfor %}
 </div>
