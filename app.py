@@ -338,6 +338,7 @@ def product(id):
     """Display delected product"""
     if request.method == "GET":
         product = db.session.query(Product).get(id)
+        addons = db.session.query(ProductAddon).all()
         return render_template("product.html", error=check_error(), user=session, product=product)
     else: # Editing
         product = db.session.query(Product).get(id)
@@ -356,6 +357,7 @@ def product(id):
             product.virgin_from = None
             product.virgin = request.form.get("virgin")
         product.tickets = request.form.get("tickets")
+        product.addon = request.form.get("addon")
         db.session.commit()
         flash("Продукт редаговано")
         return redirect(f"/products/{id}")
@@ -366,7 +368,8 @@ def product(id):
 def new_product():
     """Create a new product"""
     if request.method == "GET":
-        return render_template("product.html", error=check_error(), user=session, product=None)
+        addons = db.session.query(ProductAddon).all()
+        return render_template("product.html", error=check_error(), user=session, addons=addons, product=None)
     else: # Editing
         product = Product
         product.title = request.form.get("title")
@@ -380,10 +383,22 @@ def new_product():
         else:
             product.virgin = request.form.get("virgin")
         product.tickets = request.form.get("tickets")
+        product.addon = request.form.get("addon")
         db.session.add(product)
         db.session.commit()
         flash("Продукт створено")
         return redirect(f"/products/{product.id}")
+
+@app.route("/deletepass/<int:id>", methods=["GET", "POST"])
+@login_required
+@level_4
+def delete_product(id):
+    """Delete a product"""
+    product = db.session.query(Product).get(id)
+    db.session.delete(product)
+    db.session.commit()
+    flash("Продукт видалено")
+    return redirect("/products")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

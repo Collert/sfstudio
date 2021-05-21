@@ -96,3 +96,38 @@ top: 50%;
 left: 50%;
 opacity: 1;
 }
+.add{
+    position: fixed;
+    bottom: 25px;
+    right: 30px;
+}
+.add a{
+    text-decoration: none;
+}
+.add a div{
+    margin: 10px;
+    padding: 10px;
+    border-color: var(--background-2-color);
+    background-color: var(--background-color);
+    border-radius: 10px;
+    border-width: 5px;
+    border-style: solid;
+    transition: ease 0.3s all;
+}
+.add a div:hover{
+    background-color: var(--background-2-color);
+    border-width: 10px;
+    border-color: var(--acent-color);
+}
+.add a div i{
+    color: var(--acent-color);
+    font-size: 50px;
+    display: grid;
+    place-items: center;
+    grid-template-columns: auto auto;
+    gap: 1rem;
+}
+.add a div i span{
+    font-size: 25px;
+    text-align: center;
+}

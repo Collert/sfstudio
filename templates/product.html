@@ -46,6 +46,24 @@ Home
             <h3 style="text-align: center; margin-bottom: 0;">Надає занять: </h3><span id="tickets" contenteditable>{% if product %}{{product.tickets}}{% else %}1{% endif %}</span>
             <input name="tickets" id="true-tickets" hidden>
         </div>
+        <div class="addons">
+            <select name="addon">
+                {% if product.addon %}
+                {% for addon in addons %}
+                {% if product.addon == addon.id %}
+                <option selected value="{{addon.id}}">{{addon.name}}</option>
+                {% else %}
+                <option value="{{addon.id}}">{{addon.name}}</option>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <option hidden disabled selected>Додаткові привілегії</option>
+                {% for addon in addons %}
+                <option value="{{addon.id}}">{{addon.name}}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </div>
         <div class="register">
             <button type="submit" class="btn btn-primary">Зберегти</button>
         </div>

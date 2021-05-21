@@ -67,6 +67,7 @@ class Product(db.Model):
     price_from = db.Column(db.Numeric, nullable=True)
     virgin_from = db.Column(db.Numeric, nullable=True)
     tickets = db.Column(db.Integer, nullable=True)
+    addon = db.Column(db.Integer, nullable=True)
 
 class Virgins(db.Model):
     __tablename__="virgins"
@@ -79,9 +80,3 @@ class Belt(db.Model):
     person = db.Column(db.Integer, nullable=False)
     coach = db.Column(db.Boolean, nullable=False, default=False)
     dietitian = db.Column(db.Boolean, nullable=False, default=False)
-
-class AddonRelation(db.Model):
-    __tablename__="addon_relations"
-    id = db.Column(db.Integer, primary_key=True)
-    product = db.Column(db.Integer, nullable=False)
-    addon = db.Column(db.Integer, nullable=False)

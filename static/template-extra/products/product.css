@@ -63,3 +63,8 @@
     background-color: var(--acent-color);
     border-color: var(--acent-color);
 }
+.addons select{
+    background-color: var(--background-color);
+    border-radius: 10px;
+    padding: 5px;
+}
