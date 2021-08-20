@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="uk">
+    <head>
+        <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+
+        <!-- bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--Fontawesome-->
+        <link href="/static/fontawesome-free-5.15.2-web/css/all.css" rel="stylesheet">
+
+        <!--Custom stylesheet-->
+        <link href="/static/favicon.png" rel="icon">
+        <link href="/static/style.css" rel="stylesheet">
+
+        <title>SFStudio: {% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <header>
+            <!-- Notification banner -->
+            {% if get_flashed_messages(with_categories = true) %}
+                {% if error %}
+                    <div style="position: absolute; width: 100%;" class="alert alert-danger border text-center" role="alert">
+                        {{ get_flashed_messages() | join(" ") }}
+                    </div>
+                {% else %}
+                    <div style="position: absolute; width: 100%;" class="alert alert-primary border text-center" role="alert">
+                        {{ get_flashed_messages() | join(" ") }}
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% include "header.html" %}
+            <script>
+                $(document).ready(function() {
+                setTimeout(function() {
+                    $('.alert').fadeOut('slow');
+                }, 3000); // <-- time in milliseconds
+                });
+            </script>
+        </header>
+        <main>
+            {% block main %}{% endblock %}
+        </main>
+    </body>
+</html>

@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Requests
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/events/events.css" rel="stylesheet">
+
+<div class="main">
+    {% for request in requests %}
+    <div class="class-card">
+        <div class="left">
+            <div class="title">
+                {{request[0].title|upper}}
+            </div>
+            <div class="location">
+                {{request[0].location}}
+            </div>
+            <div class="time-frame">
+                {% if request[0].start.day == request[0].end.day %}
+                <div class="date">{{request[0].start.strftime('%d/%m')}}</div>
+                <div class="time">{{request[0].start.strftime('%H:%M')}} - {{request[0].end.strftime('%H:%M')}}</div>
+                {% else %}
+                <span class="date">{{request[0].start.strftime('%d/%m')}},</span> <span class="time">{{request[0].start.strftime('%H:%M')}}</span> - 
+                <span class="date">{{request[0].end.strftime('%d/%m')}},</span> <span class="time">{{request[0].end.strftime('%H:%M')}}</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="right">
+            <div>
+            <div class="coach">
+                <h3>Замовник:</h3>
+                <img src="{{request[1].picture}}">
+                <span style="text-align: center;">{{request[1].first}} {{request[1].last}}</span>
+            </div>
+            </div>
+            <div style="display: grid; place-items: center; width: 100%; grid-template-columns: auto auto;">
+            <form action="/book/{{request[0].id}}/accept" method="POST">
+                <button class="btn btn-success" type="submit"><i class="fas fa-check"></i></button>
+            </form>
+            <form action="/book/{{request[0].id}}/decline" method="POST">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#Modal{{request[0].id}}">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="Modal{{request[0].id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" style="color: black;" id="exampleModalLabel">Відхилити запит?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        <div style="color: black; margin-bottom: 10px;">Ви відхиляєте цей запит. Будь ласка напишіть причину чому ви вирішили відхилити цей запит (непідходящий час, важкий день перед подією і т.п.) для того щоб клієнт зміг запропонувати нову сесію за підходящих вам умов.</div>
+                        <input type="text" name="reason" class="form-control" placeholder="Причина">
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрити</button>
+                        <button type="submit" class="btn btn-danger">Відхилити</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

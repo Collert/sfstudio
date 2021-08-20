@@ -1,0 +1,133 @@
+@import "/static/constants.css";
+
+.main{
+    width: 100%;
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+.top{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 15px;
+}
+.title{
+    display: grid;
+    place-items: center;
+}
+.price{
+    text-align: center;
+    display: grid;
+    place-items: center;
+    max-width: 90px;
+}
+.description{
+    text-align: center;
+}
+.card-me{
+    gap: 15px;
+    max-width: 280px;
+    text-decoration: none;
+}
+.price > .number{
+    font-size: 20px;
+    color: var(--acent-color);
+    font-weight: bold;
+    text-overflow: clip;
+}
+.virgin-price{
+    color: #ec2f2f;
+}
+.discount{
+    text-decoration: line-through;
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--text-color);
+}
+.content {
+position: relative;
+width: 100%;
+overflow: hidden;
+}
+
+.content .content-overlay {
+background: rgba(0,0,0,0.7);
+position: absolute;
+height: 100%;
+width: 100%;
+left: 0;
+top: 0;
+bottom: 0;
+right: 0;
+opacity: 0;
+-webkit-transition: all 0.4s ease-in-out 0s;
+-moz-transition: all 0.4s ease-in-out 0s;
+transition: all 0.4s ease-in-out 0s;
+}
+
+.content:hover .content-overlay{
+opacity: 1;
+}
+
+.content-image{
+width: 100%;
+}
+
+.content-details {
+position: absolute;
+text-align: center;
+padding-left: 1em;
+padding-right: 1em;
+width: 100%;
+top: 50%;
+left: 50%;
+opacity: 0;
+-webkit-transform: translate(-50%, -50%);
+-moz-transform: translate(-50%, -50%);
+transform: translate(-50%, -50%);
+-webkit-transition: all 0.3s ease-in-out 0s;
+-moz-transition: all 0.3s ease-in-out 0s;
+transition: all 0.3s ease-in-out 0s;
+}
+
+.content:hover .content-details{
+top: 50%;
+left: 50%;
+opacity: 1;
+}
+.add{
+    position: fixed;
+    bottom: 25px;
+    right: 30px;
+}
+.add a{
+    text-decoration: none;
+}
+.add a div{
+    margin: 10px;
+    padding: 10px;
+    border-color: var(--background-2-color);
+    background-color: var(--background-color);
+    border-radius: 10px;
+    border-width: 5px;
+    border-style: solid;
+    transition: ease 0.3s all;
+}
+.add a div:hover{
+    background-color: var(--background-2-color);
+    border-width: 10px;
+    border-color: var(--acent-color);
+}
+.add a div i{
+    color: var(--acent-color);
+    font-size: 50px;
+    display: grid;
+    place-items: center;
+    grid-template-columns: auto auto;
+    gap: 1rem;
+}
+.add a div i span{
+    font-size: 25px;
+    text-align: center;
+}

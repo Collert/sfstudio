@@ -1,0 +1,19 @@
+.main{
+    width: 100%;
+    display: grid;
+    place-items: center;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+.card-me{
+    gap: 10px;
+}
+.pic{
+    display: grid;
+    place-items: center;
+}
+.pic > img{
+    width: 150px;
+    border-radius: 50%;
+}

@@ -1,0 +1,76 @@
+<style>
+    div.logo{
+        display: grid;
+        place-items: center center;
+    }
+    @media(min-width: 1150px){
+        .logo{
+            width: 17.5vw;
+        }
+    }
+</style>
+<div class="header no-print">
+    <div class="logo">
+        <img style="max-height: 160px;" src="/static/logo.png">
+    </div>
+    <div class="menu-items">
+    <div style="width: 100%;">
+        <a class="menu-item" href="/profile">
+            <div class="icon">
+                <img class="profile-pic" src="{% if user %}{{user.picture}}{% else %}/static/fallback/no-pfp.png{% endif %}">
+            </div>
+            <div class="option-text">
+                <span>{% if user.id %} Мій профіль {% else %} Увійти {% endif %}</span>
+            </div>
+        </a>
+        <a class="menu-item" href="/events">
+            <div class="icon">
+                <span class="fas fa-dumbbell"></span>
+            </div>
+            <div class="option-text">
+                <span>Заняття</span>
+            </div>
+        </a>
+        {% if user.id %}
+        {% if user.role > 1 %}
+        <a class="menu-item" href="/lookup">
+            <div class="icon">
+                <span class="fas fa-search"></span>
+            </div>
+            <div class="option-text">
+                <span>Знайти клієнта</span>
+            </div>
+        </a>
+        {% endif %}
+        {% if user.role == 2 %}
+        <a class="menu-item" href="/requests">
+            <div class="icon">
+                <span class="far fa-clipboard"></span>
+            </div>
+            <div class="option-text">
+                <span>Бронювання</span>
+            </div>
+        </a>
+        {% endif %}
+        {% if user.role > 2 %}
+        <a class="menu-item" href="/pass/new/6942069">
+            <div class="icon">
+                <span class="far fa-plus-square"></span>
+            </div>
+            <div class="option-text">
+                <span>Створити абонемент</span>
+            </div>
+        </a>
+        {% endif %}
+        {% endif %}
+        <a class="menu-item" href="/products">
+            <div class="icon">
+                <span class="fas fa-ticket-alt"></span>
+            </div>
+            <div class="option-text">
+                <span>Абонементи</span>
+            </div>
+        </a>
+    </div>
+    </div>
+</div>

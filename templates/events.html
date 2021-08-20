@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/events/events.css" rel="stylesheet">
+
+<div class="main">
+    {% for class in events %}
+    <div class="class-card">
+        <div class="left">
+            <div class="title">
+                {{class[0].title|upper}}
+            </div>
+            <div class="location">
+                {{class[0].location}}
+            </div>
+            <div class="time-frame">
+                {% if class[0].start.day == class[0].end.day %}
+                <div class="date">{{class[0].start.strftime('%d/%m')}}</div>
+                <div class="time">{{class[0].start.strftime('%H:%M')}} - {{class[0].end.strftime('%H:%M')}}</div>
+                {% else %}
+                <span class="date">{{class[0].start.strftime('%d/%m')}},</span> <span class="time">{{class[0].start.strftime('%H:%M')}}</span> - 
+                <span class="date">{{class[0].end.strftime('%d/%m')}},</span> <span class="time">{{class[0].end.strftime('%H:%M')}}</span>
+                {% endif %}
+            </div>
+            <div class="participants">
+                <div class="pictures">
+                    {% for person in range([3, participants[class[0].id]|length]|min) %}
+                    <img src="{{participants[class[0].id][person].picture}}">
+                    {% endfor %}
+                </div>
+                <div class="names">
+                    {% if participants[class[0].id] %}
+                    {% for person in range([3, participants[class[0].id]|length]|min) %}
+                    {{participants[class[0].id][person].first}}{% if participants[class[0].id]|length <= 3 %}{% if person + 1 != participants[class[0].id]|length %}, {% endif %}{% else %},{% endif %}
+                    {% endfor %}
+                    {% if participants[class[0].id]|length > 3 %}
+                    та ще {{participants[class[0].id]|length - 3}} {% if participants[class[0].id]|length - 3 == 1 %} людина буде {% else %} людей будуть {% endif %} там.
+                    {% elif participants[class[0].id]|length == 1 %}
+                    буде там.
+                    {% else %}
+                    будуть там.
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div>
+            <div class="free-spots">
+                <h3 style="text-align: center; margin-bottom: 0;">Вільних місць: </h3><span {% if class[0].free <= 3 %} style="color: #cc0a0a;" {% endif %}>{{class[0].free}}</span>
+            </div>
+            <div class="coach">
+                <h3>Тренер:</h3>
+                <img src="{{class[1].picture}}">
+                <span style="text-align: center;">{{class[1].first}} {{class[1].last}}</span>
+            </div>
+            </div>
+            <a class="btn btn-primary" style="margin-top: 10px;" href="/event/{{class[0].id}}" role="button">Переглянути</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if user.role and user.role >= 2 %}
+<div class="add">
+    <a href="/event/new">
+    <div>
+        <i class="fas fa-plus-circle"><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-weight: normal;">Створити<br> заняття</span></i>
+    </div>
+    </a>
+</div>
+{% endif %}
+{% endblock %}

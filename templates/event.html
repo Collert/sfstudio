@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/event/event.css" rel="stylesheet">
+
+<div class="main">
+    <div class="left">
+        <div class="title">
+            {{event.title|upper}}
+        </div>
+        <div class="location">
+            {{event.location}}
+        </div>
+        <div class="time-frame">
+            {% if event.start.day == event.end.day %}
+            <div class="date">{{event.start.strftime('%d/%m')}}</div>
+            <div class="time">{{event.start.strftime('%H:%M')}} - {{event.end.strftime('%H:%M')}}</div>
+            {% else %}
+            <span class="date">{{event.start.strftime('%d/%m')}},</span> <span class="time">{{event.start.strftime('%H:%M')}}</span> - 
+            <span class="date">{{event.end.strftime('%d/%m')}},</span> <span class="time">{{event.end.strftime('%H:%M')}}</span>
+            {% endif %}
+        </div>
+        {% if participants %}
+        <h3>Хто буде з вами:</h3>
+        <div class="participants">
+            {% for person in participants %}
+            <div class="person">
+                <img src="{{person[1].picture}}">
+                <div>
+                    {{person[1].first}} {{person[1].last}}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="right">
+        <div class="free-spots">
+            <h3 style="text-align: center; margin-bottom: 0;">Вільних місць: </h3><span {% if event.free <= 3 %} style="color: #cc0a0a;" {% endif %}>{{event.free}}</span>
+        </div>
+        <div class="coach">
+            <h3>Тренер:</h3>
+            <img src="{{coach.picture}}">
+            <span style="text-align: center;">{{coach.first}} {{coach.last}}</span>
+        </div>
+        <form class="register" action="/event/{{event.id}}" method="POST">
+            {% if user.id %}
+            {% if event.free > 0 %}
+            <button type="submit" class="btn btn-primary">Зареєструватися</button>
+            {% else %}
+            <button type="button" disabled class="btn btn-secondary" style="font-weight: bold; font-size: 20px;">Немає вільних місць</button>
+            {% endif %}
+            {% else %}
+            <button type="submit" disabled class="btn btn-secondary" style="font-weight: bold; font-size: 20px;">Увійдіть щоб зареєструватися</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/profile/profile.css" rel="stylesheet">
+<div>
+    <div class="pfp">
+        <img src="{{profile.picture}}">
+    </div>
+    <div class="name">
+        {{profile.first}} {{profile.last}}
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="title">
+                Активний абонемент:
+            </div>
+            <div class="pass">
+                {% if pas %}
+                <div class="pass title">{{product.title}}</div>
+                <div class="pass-qr">
+                    <img src="https://chart.googleapis.com/chart?chs=230x230&cht=qr&chl={{pas.id}}">
+                    <small>#{{pas.id}}</small>
+                </div>
+                <div class="info">
+                    <div class="info-block">
+                        <div>Занять залишилося:</div><span>{{pas.tickets}}</span>
+                    </div>
+                    <div class="info-block">
+                        <div>Дата активації:</div><span>{{pas.activation_date.strftime('%d/%m')}}</span>
+                    </div>
+                    <div class="info-block">
+                        <div>Вичерпується через:</div><span>{{days_left}}</span><br>{% if days_left == 1 %} день {% elif 1 < days_left < 5 %} дні {% else %} днів {% endif %}
+                    </div>
+                    {% if pas.called_sick %}
+                    {% if end_sick > end_sick.today() %}
+                    <div class="info-block">
+                        <div>Заморожений до:</div><span>{{end_sick.strftime('%d/%m')}}</span>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <button type="button" class="info-block sick" data-bs-toggle="modal" data-bs-target="#sickModal">
+                        <div>Задекларувати хворобу</div><span class="far fa-tired"></span>
+                    </button>
+                    <!-- Modal -->
+                    <form action="/call_sick/{{profile.id}}" method="POST" class="modal fade" id="sickModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Задекларувати хворобу?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            ЦЮ ДІЮ ВІДМІНИТИ НЕ МОЖЛИВО!<br>
+                            Декдаруючи хворобу цей абонемент буде заморожено на 7 днів. Під час цього буде не можливо бронювати заняття. Після декларації хвороби, дата закінчення терміну просунеться на тиждень вперед.
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Відмінити</button>
+                            <button type="submit" class="btn btn-primary">Декларувати</button>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="pass title">У вас немає активного абонемента</div>
+                <div class="info-block">
+                    <span>¯\_(ツ)_/¯</span>
+                </div>
+                {% endif %}
+            </div>
+            {% if user.role >= 3 %}
+            <div class="grid">
+                <a class="btn btn-bold hor" href="/pass/new/{{profile.id}}" role="button"><i class="fas fa-plus-circle icon"><span class="text">Додати абонемент</span></i></a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <div class="title">
+                Майбутні заняття:
+            </div>
+            {% if events|length > 0 %}
+            {% for class in events %}
+            <div class="pass class main">
+                <div class="class title grid">
+                    <h2>{{ class[0].title }}</h2>
+                    <span style="font-size: 16px;"><b>Коли: </b>{{class[0].start.strftime('%d/%m %H:%M')}}</span>
+                </div>
+                <div class="class content">
+                    <div class="class location">
+                        <h3>Локація:</h3>
+                        {{class[0].location}}
+                    </div>
+                    <div class="grid bot">
+                        <div class="class coach grid">
+                            <h3>Тренер:</h3>
+                            <img src="{{class[1].picture}}">
+                            <span style="text-align: center;">{{class[1].first}} {{class[1].last}}</span>
+                        </div>
+                        <div>
+                            <a class="btn btn-primary grid" style="height: 8rem;" href="/event/{{class[0].id}}" role="button"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h1 style="text-align: center; font-size: 50px; margin: 30px;">Поки пусто...</h1>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <div class="title">
+                Інші абонементи:
+            </div>
+            <div class="other-pass">
+                {% for pas in more %}
+                <div class="pass other">
+                    <h3 style="text-align: center;">{{pas[1].name}}</h3>
+                    <div class="grid" style="margin-top: 20px; margin-bottom: 10px;"><a class="btn btn-primary" href="/book/{{pas[1].id}}" role="button">Забронювати</a></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="title">
+                Інша інформація про вас:
+            </div>
+            <div class="grid">
+                <div class="middle-split">
+                    <span class="left">Номер облікового запису:</span>
+                    <span class="right">{{ profile.id }}</span>
+                    {% if profile.email %}
+                    <span class="left">Електронна адреса:</span>
+                    <span class="right">{{ profile.email }}</span>
+                    {% endif %}
+                    {% if profile.belt %}
+                    <span class="left">Відзнаки:</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% if not own %}
+            {% if user.role >= 3 %}
+            <div class="grid">
+            <a class="btn btn-primary" href="/profile/{{profile.id}}/edit" role="button">Редагувати профіль</a>
+            </div>
+            {% elif user.role == 1 %}
+
+            {% endif %}
+            {% endif %}
+            <div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

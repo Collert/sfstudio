@@ -1,0 +1,8 @@
+flask
+flask_session
+gunicorn
+sqlalchemy==1.3.23
+google-api-python-client
+psycopg2
+flask_sqlalchemy
+sendgrid
