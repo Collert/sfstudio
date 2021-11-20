@@ -1,3 +1,4 @@
+<link href="/static/template-extra/profile/profile.css" rel="stylesheet">
 <style>
     div.logo{
         display: grid;
@@ -6,6 +7,18 @@
     @media(min-width: 1150px){
         .logo{
             width: 17.5vw;
+        }
+    }
+    @media(min-width:1150px) {
+        .count{
+            bottom: 70%;
+            left: 30%;
+        }   
+    }
+    @media(max-width:1150px){
+        .count{
+            bottom: 80%;
+            left: 70%;
         }
     }
 </style>
@@ -43,13 +56,14 @@
         </a>
         {% endif %}
         {% if user.role == 2 %}
-        <a class="menu-item" href="/requests">
+        <a class="menu-item top" href="/requests">
             <div class="icon">
                 <span class="far fa-clipboard"></span>
             </div>
             <div class="option-text">
                 <span>Бронювання</span>
             </div>
+            {% if user.booking_requests %}<span class="count dot"></span>{% endif %}
         </a>
         {% endif %}
         {% if user.role > 2 %}

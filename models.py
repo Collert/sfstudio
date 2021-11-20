@@ -92,3 +92,17 @@ class EventRequest(db.Model):
     coach = db.Column(db.Integer, nullable=False)
     accepted = db.Column(db.Boolean, nullable=True, default=None) # NULL if the request hasn't recieved a response yet
     reason = db.Column(db.String, nullable=True, default=None) # Reason for declining the booking
+
+class Notification(db.Model):
+    __tablename__="notifications"
+    id = db.Column(db.Integer, primary_key=True)
+    owner = db.Column(db.Integer, nullable=False)
+    message = db.Column(db.String, nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    read = db.Column(db.Boolean, nullable=False, default=False)
+    category = db.Column(db.Integer, nullable=False)
+    ######################################################
+    # Notification categories (display different icons): #
+    # 1 = class related                                  #
+    # 2 = pass related                                   #
+    ######################################################

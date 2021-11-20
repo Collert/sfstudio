@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block main %}
+<link href="/static/template-extra/notifications/notifications.css" rel="stylesheet">
+<div style="width: 100%;">
+{% for notification in notifications %}
+<div id="notification{{notification.id}}" class="card-me">
+    <div class="left">
+        {% if notification.category == 1 %}
+            <i class="fas fa-dumbbell"></i>
+        {% elif notification.category == 2 %}
+            <i class="fas fa-ticket-alt"></i>
+        {% endif %}
+    </div>
+    <div class="right">
+        {{notification.message}}
+    </div>
+    <div class="dismiss">
+        <div hidden id="hideNotification{{notification.id}}">{{notification.id}}</div>
+        <a href="#" onclick="dismissNotification(document.getElementById('hideNotification{{notification.id}}').innerHTML)"><i class="fas fa-times"></i></a>
+    </div>
+</div>
+{% endfor %}
+</div>
+<script src="/static/template-extra/notifications/notifications.js"></script>
+{% endblock %}

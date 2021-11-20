@@ -1,0 +1,7 @@
+.card-me{
+    grid-template-columns: 10% 85% auto;
+    width: 100%;
+}
+.left{
+    font-size: 40px;
+}

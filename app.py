@@ -503,6 +503,11 @@ def login():
                 # Invalid token
                 pass
         user = User.query.filter_by(google_id=guserid).first()
+        if user.role == 2:
+            session["booking_requests"] = len(check_booking_requests(user.id))
+            session["notification_count"] = None
+        else:
+            session["notification_count"] = len(check_user_notifications(user.id))
         if not user:
             return redirect("/register")
         else:

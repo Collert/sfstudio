@@ -1,3 +1,4 @@
+from datetime import datetime, time
 from operator import or_
 from flask import redirect, session, flash, request
 from functools import wraps
@@ -22,19 +23,13 @@ def create_event_request(creator, title, start, end, location, coach):
 
 def check_booking_requests(user_id):
     """Check any notifications for booking requests for 1:1s"""
-    requests = db.session.query(EventRequest).filter(EventRequest.coach == user_id).count()
-    if requests > 0:
-        return requests
-    else:
-        return False
+    requests = db.session.query(EventRequest).filter(EventRequest.coach == user_id, EventRequest.accepted == None).all()
+    return requests
 
 def check_user_notifications(user_id):
     """Check notifications for any accepted or rejected booking requests"""
-    requests = db.session.query(EventRequest).filter(EventRequest.creator == user_id, EventRequest.accepted != None).count()
-    if requests > 0:
-        return requests
-    else:
-        return False
+    requests = db.session.query(Notification).filter(Notification.owner == user_id).all()
+    return requests
 
 def clear_request(reqest_id):
     """Delete EventRequest from database"""
@@ -45,6 +40,18 @@ def clear_request(reqest_id):
         db.session.delete(request)
         db.session.commit()
         return
+
+def make_notification(user_id, message, category):
+    """Create a notification for specified user"""
+    notification = Notification(owner=user_id, message=message, category=category, time=datetime.now())
+    db.session.add(notification)
+    db.session.commit()
+
+def delete_notification(notification_id):
+    """Delete a notification from database"""
+    notification = db.session.query(Notification).get(notification_id)
+    db.session.delete(notification)
+    db.session.commit()
 
 def remove_ticket(owner_id, addon_id):
     """Look up a pass and remove 1 ticket from it. If pass doesn't have enough tickets, return an error message"""

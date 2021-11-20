@@ -7,8 +7,15 @@ Profile
 {% block main %}
 <link href="/static/template-extra/profile/profile.css" rel="stylesheet">
 <div>
-    <div class="pfp">
-        <img src="{{profile.picture}}">
+    <div class="top">
+        <div class="pfp">
+            <img src="{{profile.picture}}">
+        </div>
+        {% if own %}
+        <div class="notification">
+            <a href="/notifications" class="fas fa-bell">{% if notifications %}<span class="count dot">{% if notifications < 99 %}{{notifications}}{% else %}99+{% endif %}</span>{% endif %}</a>
+        </div>
+        {% endif %}
     </div>
     <div class="name">
         {{profile.first}} {{profile.last}}
@@ -127,7 +134,7 @@ Profile
         </div>
         <div class="col-md-6">
             <div class="title">
-                Інша інформація про вас:
+                Інша інформація про {% if own %}вас{% else %}цю людину{% endif %}:
             </div>
             <div class="grid">
                 <div class="middle-split">
