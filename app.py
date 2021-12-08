@@ -131,7 +131,11 @@ def profile_own():
     coached = db.session.query(Class, User).join(User, User.id == Class.coach).filter(Class.coach == session["id"], Class.end > datetime.datetime.now()).all()
     for classs in coached:
         events.append(classs)
-    pas = db.session.query(Pass).get(user.pass_id) if user.pass_id else None
+    if user.pass_id:
+        pas = db.session.query(Pass).get(user.pass_id)
+        pas = None if pas.activation_date + datetime.timedelta(days=PASS_EXPIRATION_PERIOD) < datetime.date.today() else pas
+    else:
+        pas = None
     more = db.session.query(Pass, ProductAddon).join(ProductAddon, ProductAddon.id == Pass.addons).filter(Pass.owner == session["id"], Pass.addons != None, Pass.tickets > 0).all()
     belt = db.session.query(Belt).filter(Belt.id == user.belt).first() if user.belt else None
     if pas:
@@ -142,6 +146,7 @@ def profile_own():
         product = None
         days_left = None
         end_sick = None
+    notifications = len(check_user_notifications(session["id"]))
     return render_template("profile.html", profile=session, own=True, user=session, error=check_error(), pas=pas, product=product, days_left=days_left, end_sick=end_sick, events=events, more=more, belt=belt)
 
 @app.route("/call_sick/<int:id>", methods=["POST"])
@@ -181,7 +186,7 @@ def profile(id):
         return redirect(url_for("lookup", err="t"))
     events = db.session.query(Class, User, Relationship).join(User, User.id == Class.coach).join(Relationship, Relationship.classs == Class.id).filter(Relationship.participant == session["id"]).all() # That's one scary query lmao
     pas = db.session.query(Pass).filter(Pass.owner == id).first()
-    more = db.session.query(Pass, Product).join(Product, Product.id == Pass.product).filter(Pass.owner == session["id"], Pass.addons != None).all()
+    more = db.session.query(Pass, Product).join(Product, Product.id == Pass.product).filter(Pass.owner == id, Pass.addons != None).all()
     belt = db.session.query(Belt).filter(Belt.id == user.belt).first() if user.belt else None
     if pas:
         product = db.session.query(Product).filter(Product.tickets == pas.initial_tickets).first()
@@ -300,6 +305,8 @@ def new_pass(id):
         if not single_use:
             user.pass_id = new_pass.id
         db.session.commit()
+        if not single_use:
+            make_notification(user.id, f"Адміністратор {session['first']} {session['last']} додав(ла) абонемент: {(db.session.query(Product).filter(Product.id == product).first()).title} до вашого облікового запису")
         flash("Абонемент додано")
         return redirect("/")
 
